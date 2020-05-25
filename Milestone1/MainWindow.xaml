@@ -10,7 +10,7 @@
         <Label x:Name="stateLabel" Content="State" HorizontalAlignment="Left" FontSize="14" Margin="90,44,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.562,-1.43"/>
         <Label x:Name="cityLabel" Content="City" HorizontalAlignment="Left" FontSize="14" Margin="90,97,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.878,-1.336"/>
         <ComboBox x:Name="stateList" HorizontalAlignment="Left" Margin="199,44,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="0.387,-0.098" SelectionChanged="StateList_SelectionChanged"/>
-        <ComboBox x:Name="cityList" HorizontalAlignment="Left" Margin="199,100,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="-0.28,-0.92"/>
+        <ComboBox x:Name="cityList" HorizontalAlignment="Left" Margin="199,100,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="-0.28,-0.92" SelectionChanged="CityList_SelectionChanged"/>
         <DataGrid x:Name="businessGrid" Height="282" Margin="61,165,61.6,0" VerticalAlignment="Top" RenderTransformOrigin="0.497,0.545"/>
 
     </Grid>
