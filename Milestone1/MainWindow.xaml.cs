@@ -92,38 +92,52 @@ namespace Milestone1
             businessGrid.Columns.Add(col3);
         }
 
+        private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
+        {
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = sqlstr;
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            myf(reader);
+
+                    } catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
+                        System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+
+        private void addCity(NpgsqlDataReader R)
+        {
+            cityList.Items.Add(R.GetString(0));
+        }
+
         private void StateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             cityList.Items.Clear();
             if ( stateList.SelectedIndex > -1 )
             {
-                using (var connection = new NpgsqlConnection(buildConnectionString()))
-                {
-                    connection.Open();
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = connection;
-                        cmd.CommandText = "SELECT distinct city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
+                string sqlStr = "SELECT distinct city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
+                executeQuery(sqlStr, addCity);
+            }
+        }
 
-                        try
-                        {
-                            var reader = cmd.ExecuteReader();
-                            while (reader.Read())
-                                cityList.Items.Add(reader.GetString(0));
-                        }
-                        catch (NpgsqlException ex)
-                        {
-                            Console.WriteLine(ex.Message.ToString());
-                            System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                        }
-                        finally
-                        {
-                            connection.Close();
-                        }
-                    }
-                }
-            } 
-            
+        private void addGridRow(NpgsqlDataReader R)
+        {
+            businessGrid.Items.Add(new Business() { name = R.GetString(0), state = R.GetString(1), city = R.GetString(2) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -131,31 +145,8 @@ namespace Milestone1
             businessGrid.Items.Clear();
             if (cityList.SelectedIndex > -1)
             {
-                using (var connection = new NpgsqlConnection(buildConnectionString()))
-                {
-                    connection.Open();
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = connection;
-                        cmd.CommandText = "SELECT name, state, city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
-
-                        try
-                        {
-                            var reader = cmd.ExecuteReader();
-                            while (reader.Read())
-                                businessGrid.Items.Add(new Business() { name = reader.GetString(0), state = reader.GetString(1), city = reader.GetString(2) });
-                        }
-                        catch (NpgsqlException ex)
-                        {
-                            Console.WriteLine(ex.Message.ToString());
-                            System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                        }
-                        finally
-                        {
-                            connection.Close();
-                        }
-                    }
-                }
+                string sqlStr = "SELECT name, state, city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
+                executeQuery(sqlStr, addGridRow);
             }
         }
     }
