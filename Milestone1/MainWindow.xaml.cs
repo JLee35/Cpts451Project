@@ -39,17 +39,36 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milstone1b; password=mustafa";
+            return "Host = localhost; Username = postgres; Database = milestone1; password=mustafa";
         }
 
         private void addStates()
         {
-            var connection = new NpgsqlConnection();
-            connection.Open();
-            var cmd = new NpgsqlCommand();
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT distinct state FROM business ORDER BY state";
 
-            cmd.Connection = connection;
-            cmd.CommandText = "";
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            stateList.Items.Add(reader.GetString(0));
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
+                        System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
         }
 
         private void addColumns2Grid()
