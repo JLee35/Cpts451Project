@@ -24,6 +24,8 @@ namespace Milestone1
 
         public class Business
         {
+            public string bid { get; set; }
+
             public string name { get; set; }
 
             public string state { get; set; }
@@ -90,6 +92,12 @@ namespace Milestone1
             col3.Header = "City";
             col3.Width = 150;
             businessGrid.Columns.Add(col3);
+
+            DataGridTextColumn col4 = new DataGridTextColumn();
+            col4.Binding = new Binding("bid");
+            col4.Header = "";
+            col4.Width = 0;
+            businessGrid.Columns.Add(col4);
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -137,7 +145,7 @@ namespace Milestone1
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { name = R.GetString(0), state = R.GetString(1), city = R.GetString(2) });
+            businessGrid.Items.Add(new Business() { name = R.GetString(0), state = R.GetString(1), city = R.GetString(2), bid = R.GetString(3) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -145,8 +153,21 @@ namespace Milestone1
             businessGrid.Items.Clear();
             if (cityList.SelectedIndex > -1)
             {
-                string sqlStr = "SELECT name, state, city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
+                string sqlStr = "SELECT name, state, city, business_id FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
                 executeQuery(sqlStr, addGridRow);
+            }
+        }
+
+        private void BusinessGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (businessGrid.SelectedIndex > -1)
+            {
+                Business B = businessGrid.Items[businessGrid.SelectedIndex] as Business;
+                if ((B.bid != null) && (B.bid.ToString().CompareTo("") != 0))
+                {
+                    BusinessDetails businessWindow = new BusinessDetails(B.bid.ToString());
+                    businessWindow.Show();
+                }
             }
         }
     }
