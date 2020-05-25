@@ -95,5 +95,34 @@ namespace Milestone1
             businessGrid.Items.Add(new Business() { name = "business-2", state = "CA", city = "Pasadena" });
             businessGrid.Items.Add(new Business() { name = "business-3", state = "NV", city = "Las Vegas" });
         }
+
+        private void StateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT distinct city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
+
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            cityList.Items.Add(reader.GetString(0));
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
+                        System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
     }
 }
