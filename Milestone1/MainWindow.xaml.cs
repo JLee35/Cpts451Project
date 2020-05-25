@@ -44,7 +44,11 @@ namespace Milestone1
 
         private void addStates()
         {
-            // A DB is required to continue.   
+            // A DB is required to continue.
+            stateList.Items.Add("WA");
+            stateList.Items.Add("ID");
+            stateList.Items.Add("CA");
+            stateList.Items.Add("NV");
         }
 
         private void addColumns2Grid()
