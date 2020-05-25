@@ -39,16 +39,17 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milstone1b; password=marines182";
+            return "Host = localhost; Username = postgres; Database = milstone1b; password=mustafa";
         }
 
         private void addStates()
         {
-            // A DB is required to continue.
-            stateList.Items.Add("WA");
-            stateList.Items.Add("ID");
-            stateList.Items.Add("CA");
-            stateList.Items.Add("NV");
+            var connection = new NpgsqlConnection();
+            connection.Open();
+            var cmd = new NpgsqlCommand();
+
+            cmd.Connection = connection;
+            cmd.CommandText = "";
         }
 
         private void addColumns2Grid()
