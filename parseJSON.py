@@ -23,14 +23,13 @@ def parseBusinessData():
 			outfile.write(str(data['longitude'])+'\t') #longitude
 			outfile.write(str(data['stars'])+'\t') #stars
 			outfile.write(str(data['review_count'])+'\t') #reviewcount
-			outfile.write(str(data['is_open'])+'\t') #openstatus
-			outfile.write(cleanStr4SQL([item for item in data['categories']])+'\t') #category list
-			
+			outfile.write(str(data['is_open'])+'\t') #openstatus 
+			#outfile.write(cleanStr4SQL([item for item in data['categories']])+'\t') #category list
+			for item in data['categories']:
+				outfile.write(item + '\t')
 			for key, value in data['hours'].items():
 				outfile.write(str(key + ':' + value)+'\t') #hours
-			
 			outfile.write('\n');
-
 			line = f.readline()
 			count_line +=1
 	print(count_line)
@@ -77,10 +76,10 @@ def parseCheckinData():
 				outfile.write(day + ': \t') 
 				for time, checkins in time.items():
 					outfile.write(str(time) + ':' + str(checkins) + ' ') #checkin times
-				outfile.write('\n');
+				outfile.write('\n')
 					
 			outfile.write(cleanStr4SQL(data['business_id'])+'\t') #business id
-			outfile.write('\n');
+			outfile.write('\n')
 
 			line = f.readline()
 			count_line += 1
@@ -114,6 +113,3 @@ def parseReviewData():
 		f.close()
 
 parseBusinessData()
-parseUserData()
-parseCheckinData()
-parseReviewData()
