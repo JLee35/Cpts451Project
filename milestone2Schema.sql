@@ -18,9 +18,6 @@ CREATE TABLE Business (
 	stars real,
 	openStatus int, /* 0 = closed, 1 = open */
 	zip int
-
-	/* TODO (Team): Add OpenTimes (should this be another entity?) */
-	/* TODO (Team): Add category (I thought this was removed?) */
 );
 
 CREATE TABLE UserTable (
@@ -52,8 +49,10 @@ CREATE TABLE CheckIn (
 );
 
 CREATE TABLE Category (
-	title varchar PRIMARY KEY
-	/* TODO (Team): Handle categories relationship */
+	businessID varchar,
+	name varchar,
+	PRIMARY KEY(businessID, name),
+	FOREIGN KEY (businessID) REFERENCES Business(businessID)
 );
 
 CREATE TABLE Review (
@@ -62,4 +61,13 @@ CREATE TABLE Review (
 	businessID varchar NOT NULL,
 	stars real,
 	content char(120)
+);
+
+CREATE TABLE OpenTimes (
+	businessID varchar,
+	day varchar,
+	openTime time NOT NULL,
+	closeTime time NOT NULL,
+	PRIMARY KEY(businessID, day),
+	FOREIGN KEY (businessID) REFERENCES Business(businessID)
 );
