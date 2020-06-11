@@ -11,8 +11,9 @@ CREATE TABLE Business (
 	numReviews int,
 	state varchar,
 	stars real,
-	zipcode int(5)
+	zipcode int(5),
 
+	/* TODO (Team): Add OpenTimes (should this be another entity?) */
 	/* TODO (Team): Add category (I thought this was removed?) */
 );
 
@@ -25,8 +26,8 @@ CREATE TABLE UserTable (
 	latitude real,
 	longitude real,
 	info char(120),
-	isFanOf varchar, /* TODO (Jared): Is this correct? */
-	isFriendsWith varchar, /* TODO (Jared): Is this correct? */
+	isFanOf varchar, /* TODO (Team): Is this correct? */
+	isFriendsWith varchar, /* TODO (Team): Is this correct? */
 	numFans int,
 	votes int,
 	favorites varchar /* Does this need to point to a list of businessIDs? */
@@ -56,5 +57,4 @@ CREATE TABLE Review (
 	stars real,
 	text char(120)
 );
-
 
