@@ -1,17 +1,21 @@
 /* CptS451, Team JJJ */
-
+DROP TABLE IF EXISTS Business CASCADE;
+DROP TABLE IF EXISTS UserTable CASCADE;
+DROP TABLE IF EXISTS CheckIn CASCADE;
+DROP TABLE IF EXISTS Category CASCADE;
+DROP TABLE IF EXISTS Review CASCADE;
 
 CREATE TABLE Business (
 	businessID varchar PRIMARY KEY,
 	avgScore real,
 	city varchar,
 	detailedInfo char(120),
-	name varchar,
+	businessName varchar,
 	numCheckins int,
 	numReviews int,
-	state varchar,
+	businessState varchar,
 	stars real,
-	zipcode int(5),
+	zip int
 
 	/* TODO (Team): Add OpenTimes (should this be another entity?) */
 	/* TODO (Team): Add category (I thought this was removed?) */
@@ -37,7 +41,7 @@ CREATE TABLE CheckIn (
 	checkInDate date,
 	checkInTime time,
 	checkInBusinessID varchar NOT NULL,
-	checkInUserId varchar NOT NULL
+	checkInUserId varchar NOT NULL,
 	PRIMARY KEY (checkInUserID, checkInBusinessID, checkInDate, checkInTime),
 	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID),
 	FOREIGN KEY (checkInUserID) REFERENCES UserTable(userID)
@@ -57,4 +61,3 @@ CREATE TABLE Review (
 	stars real,
 	text char(120)
 );
-
