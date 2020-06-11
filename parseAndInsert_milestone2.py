@@ -18,7 +18,6 @@ def insert2BusinessTable():
         count_line = 0
 
         #connect to yelpdb database on postgres server using psycopg2
-        #TODO: update the database name, username, and password
         try:
             conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
         except Exception as error:
@@ -52,13 +51,12 @@ def insert2BusinessTable():
     print(count_line)
     f.close()
 
+
 def insert2UserTable():
     with open('./yelp_user.JSON','r') as f:    #TODO: update path for the input file
         line = f.readline()
         count_line = 0
 
-        #connect to yelpdb database on postgres server using psycopg2
-        #TODO: update the database name, username, and password
         try:
             conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
         except Exception as error:
@@ -73,7 +71,7 @@ def insert2UserTable():
                       "VALUES ('" + clearnStr4SQL(data['userID']) + "','" + clearnStr4SQL(data['firstName']) + "','" + clearnStr4SQL(data['lastName']) + "','" + \
                       str(data['avgStars']) + "','" +  clearnStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
                       clearnStr4SQL(data['info']) + "','" + clearnStr4SQL(data['isFanOf']) + "','" + clearnStr4SQL(data['isFriendsWith']) + "','" + \
-                      str(data['numFans']) + "','" + str(data['votes']) + "','" + clearnStr4SQL(data['favorites'])");"
+                      str(data['numFans']) + "','" + str(data['votes']) + "','" + clearnStr4SQL(data['favorites']) + ");"
 
             try:
                 cur.execute(sql_str)
@@ -93,4 +91,44 @@ def insert2UserTable():
     f.close()
 
 
+def insert2CheckInTable():
+    with open('./yelp_checkin.JSON.JSON','r') as f:    #TODO: update path for the input file
+        line = f.readline()
+        count_line = 0
+
+        try:
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+        except Exception as error:
+            print('ERROR: Unable to connect to the database!')
+            print('Error message:', error)
+        cur = conn.cursor()
+
+        while line:
+            data = json.loads(line)
+            # Generate the INSERT statement for the current user
+            sql_str = "INSERT INTO CheckIn (checkInDate, checkInTime, checkInBusinessID, checkInUserID) " \
+                      "VALUES ('" + clearnStr4SQL(data['checkInDate']) + "','" + clearnStr4SQL(data['checkInTime']) + "','" +  \
+                      clearnStr4SQL(data['checkInBusinessID']) + "','" + clearnStr4SQL(data['checkInUserID']) + ");"
+
+            try:
+                cur.execute(sql_str)
+            except Exception as error:
+                print('ERROR: Insert to UserTable failed!')
+                print('Error message:', error)
+
+            conn.commit()
+
+            line = f.readline()
+            count_line +=1
+
+        cur.close()
+        conn.close()
+
+    print(count_line)
+    f.close()
+
+
+
+
 insert2BusinessTable()
+insert2UserTable()

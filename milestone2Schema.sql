@@ -43,7 +43,7 @@ CREATE TABLE CheckIn (
 	checkInDate date,
 	checkInTime time,
 	checkInBusinessID varchar NOT NULL,
-	checkInUserId varchar NOT NULL,
+	checkInUserID varchar NOT NULL,
 	PRIMARY KEY (checkInUserID, checkInBusinessID, checkInDate, checkInTime),
 	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID),
 	FOREIGN KEY (checkInUserID) REFERENCES UserTable(userID)
