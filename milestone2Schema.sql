@@ -1,5 +1,6 @@
 /* CptS451, Team JJJ */
 
+
 CREATE TABLE Business (
 	businessID varchar PRIMARY KEY,
 	avgScore real,
@@ -12,8 +13,7 @@ CREATE TABLE Business (
 	stars real,
 	zipcode int(5)
 
-	/* TODO (Jared): Handle address attribute (multi-value) */
-	/* TODO (Jared): Add relationships */
+	/* TODO (Team): Add category (I thought this was removed?) */
 );
 
 CREATE TABLE UserTable (
@@ -28,30 +28,33 @@ CREATE TABLE UserTable (
 	isFanOf varchar, /* TODO (Jared): Is this correct? */
 	isFriendsWith varchar, /* TODO (Jared): Is this correct? */
 	numFans int,
-	votes int
-
-	/* TODO (Jared): Add relationships */
+	votes int,
+	favorites varchar /* Does this need to point to a list of businessIDs? */
 );
 
 CREATE TABLE CheckIn (
 	checkInDate date,
-	checkInTime time
+	checkInTime time,
+	checkInBusinessID varchar NOT NULL,
+	checkInUserId varchar NOT NULL
+	PRIMARY KEY (checkInUserID, checkInBusinessID, checkInDate, checkInTime),
+	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID),
+	FOREIGN KEY (checkInUserID) REFERENCES UserTable(userID)
 
-	/* TODO (Jared): Handled checked-in relationship */
+	/* TODO (Team): Double check relationships are correct. */
 );
 
 CREATE TABLE Category (
-	title varchar PRIMARY KEY,
-
-	/* TODO (Jared): Handle categories relationship */
+	title varchar PRIMARY KEY
+	/* TODO (Team): Handle categories relationship */
 );
 
 CREATE TABLE Review (
 	reviewID varchar PRIMARY KEY,
+	userID varchar NOT NULL,
+	businessID varchar NOT NULL,
 	stars real,
 	text char(120)
-
-	/* TODO (Jared): Handle reviewed relationship */
 );
 
 
