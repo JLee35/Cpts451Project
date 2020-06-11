@@ -169,4 +169,4 @@ def insert2ReviewTable():
 insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
-insert2ReviewTable
+insert2ReviewTable()
