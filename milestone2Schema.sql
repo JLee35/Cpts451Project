@@ -61,5 +61,5 @@ CREATE TABLE Review (
 	userID varchar NOT NULL,
 	businessID varchar NOT NULL,
 	stars real,
-	text char(120)
+	content char(120)
 );

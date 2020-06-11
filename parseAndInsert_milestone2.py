@@ -92,7 +92,7 @@ def insert2UserTable():
 
 
 def insert2CheckInTable():
-    with open('./yelp_checkin.JSON.JSON','r') as f:    #TODO: update path for the input file
+    with open('./yelp_checkin.JSON','r') as f:    #TODO: update path for the input file
         line = f.readline()
         count_line = 0
 
@@ -105,7 +105,7 @@ def insert2CheckInTable():
 
         while line:
             data = json.loads(line)
-            # Generate the INSERT statement for the current user
+            # Generate the INSERT statement for the current check in
             sql_str = "INSERT INTO CheckIn (checkInDate, checkInTime, checkInBusinessID, checkInUserID) " \
                       "VALUES ('" + clearnStr4SQL(data['checkInDate']) + "','" + clearnStr4SQL(data['checkInTime']) + "','" +  \
                       clearnStr4SQL(data['checkInBusinessID']) + "','" + clearnStr4SQL(data['checkInUserID']) + ");"
@@ -113,7 +113,44 @@ def insert2CheckInTable():
             try:
                 cur.execute(sql_str)
             except Exception as error:
-                print('ERROR: Insert to UserTable failed!')
+                print('ERROR: Insert to CheckIn table failed!')
+                print('Error message:', error)
+
+            conn.commit()
+
+            line = f.readline()
+            count_line +=1
+
+        cur.close()
+        conn.close()
+
+    print(count_line)
+    f.close()
+
+
+def insert2ReviewTable():
+    with open('./yelp_review.JSON','r') as f:    #TODO: update path for the input file
+        line = f.readline()
+        count_line = 0
+
+        try:
+            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+        except Exception as error:
+            print('ERROR: Unable to connect to the database!')
+            print('Error message:', error)
+        cur = conn.cursor()
+
+        while line:
+            data = json.loads(line)
+            # Generate the INSERT statement for the current review
+            sql_str = "INSERT INTO Review (reviewID, userID, businessID, stars, content) " \
+                      "VALUES ('" + clearnStr4SQL(data['reviewID']) + "','" + clearnStr4SQL(data['userID']) + "','" + \
+                      clearnStr4SQL(data['businessID']) + "','" + str(data['stars']) + "','" + str(data['content']) + ");"
+
+            try:
+                cur.execute(sql_str)
+            except Exception as error:
+                print('ERROR: Insert to Review table failed!')
                 print('Error message:', error)
 
             conn.commit()
@@ -129,6 +166,7 @@ def insert2CheckInTable():
 
 
 
-
 insert2BusinessTable()
 insert2UserTable()
+insert2CheckInTable()
+insert2ReviewTable
