@@ -165,7 +165,6 @@ def insert2ReviewTable():
     f.close()
 
 
-
 insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
