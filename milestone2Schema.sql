@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS Review CASCADE;
 
 CREATE TABLE Business (
 	businessID varchar PRIMARY KEY,
+	address varchar,
 	avgScore real,
 	city varchar,
 	detailedInfo char(120),
