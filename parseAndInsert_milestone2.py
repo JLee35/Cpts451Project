@@ -11,6 +11,11 @@ def int2BoolStr (value):
     else:
         return 'True'
 
+
+def getDBConnectionString():
+    return psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+
+
 def insert2BusinessTable():
     #reading the JSON file
     with open('./yelp_business.JSON','r') as f:    #TODO: update path for the input file
@@ -18,7 +23,7 @@ def insert2BusinessTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+            conn = getDBConnectionString()
         except Exception as error:
             print('ERROR: Unable to connect to the database!')
             print('Error message:', error)
@@ -31,7 +36,7 @@ def insert2BusinessTable():
             # See 'milestone2Schema.sql' for details.
 
             sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, numReviews, businessState, stars, openStatus, zip) " \
-                      "VALUES ('" + clearnStr4SQL(data['businessID']) + "','" + clearnStr4SQL(data['businessName']) + "','" + clearnStr4SQL(data['address']) + "','" \
+                      "VALUES ('" + cleanStr4SQL(data['businessID']) + "','" + cleanStr4SQL(data['businessName']) + "','" + cleanStr4SQL(data['address']) + "','" \
                       str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + str(data['numCheckins'])  \
                       + "','" + str(data['numReviews']) + "','" + cleanStr4SQL(data['businessState']) + "','" + str(data['stars']) + "','" + str(data['openStatus']) |
                       + "','" + str(data['zip']) + ");"
@@ -60,7 +65,7 @@ def insert2UserTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+            conn = getDBConnectionString()
         except Exception as error:
             print('ERROR: Unable to connect to the database!')
             print('Error message:', error)
@@ -75,9 +80,9 @@ def insert2UserTable():
             # See 'milestone2Schema.sql' for details.
 
             sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, numFans, votes) " \
-                      "VALUES ('" + clearnStr4SQL(data['userID']) + "','" + clearnStr4SQL(data['firstName']) + "','" + clearnStr4SQL(data['lastName']) + "','" + \
-                      str(data['avgStars']) + "','" +  clearnStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
-                      clearnStr4SQL(data['info']) + "','" + clearnStr4SQL(data['isFanOf']) + "','" + \
+                      "VALUES ('" + cleanStr4SQL(data['userID']) + "','" + cleanStr4SQL(data['firstName']) + "','" + cleanStr4SQL(data['lastName']) + "','" + \
+                      str(data['avgStars']) + "','" +  cleanStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
+                      cleanStr4SQL(data['info']) + "','" + cleanStr4SQL(data['isFanOf']) + "','" + \
                       str(data['numFans']) + "','" + str(data['votes']) + "','" + ");"
 
             try:
@@ -104,7 +109,7 @@ def insert2CheckInTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+            conn = getDBConnectionString()
         except Exception as error:
             print('ERROR: Unable to connect to the database!')
             print('Error message:', error)
@@ -114,8 +119,8 @@ def insert2CheckInTable():
             data = json.loads(line)
 
             sql_str = "INSERT INTO CheckIn (checkInDate, checkInTime, checkInBusinessID, checkInUserID) " \
-                      "VALUES ('" + clearnStr4SQL(data['checkInDate']) + "','" + clearnStr4SQL(data['checkInTime']) + "','" +  \
-                      clearnStr4SQL(data['checkInBusinessID']) + "','" + clearnStr4SQL(data['checkInUserID']) + ");"
+                      "VALUES ('" + cleanStr4SQL(data['checkInDate']) + "','" + cleanStr4SQL(data['checkInTime']) + "','" +  \
+                      cleanStr4SQL(data['checkInBusinessID']) + "','" + cleanStr4SQL(data['checkInUserID']) + ");"
 
             try:
                 cur.execute(sql_str)
@@ -141,7 +146,7 @@ def insert2ReviewTable():
         count_line = 0
 
         try:
-            conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+            conn = getDBConnectionString()
         except Exception as error:
             print('ERROR: Unable to connect to the database!')
             print('Error message:', error)
@@ -151,8 +156,8 @@ def insert2ReviewTable():
             data = json.loads(line)
             
             sql_str = "INSERT INTO Review (reviewID, userID, businessID, stars, content) " \
-                      "VALUES ('" + clearnStr4SQL(data['reviewID']) + "','" + clearnStr4SQL(data['userID']) + "','" + \
-                      clearnStr4SQL(data['businessID']) + "','" + str(data['stars']) + "','" + str(data['content']) + ");"
+                      "VALUES ('" + cleanStr4SQL(data['reviewID']) + "','" + cleanStr4SQL(data['userID']) + "','" + \
+                      cleanStr4SQL(data['businessID']) + "','" + str(data['stars']) + "','" + str(data['content']) + ");"
 
             try:
                 cur.execute(sql_str)
@@ -171,8 +176,11 @@ def insert2ReviewTable():
     print(count_line)
     f.close()
 
-def insert2CategoryTable():
-    # Check 'milestone2Schema.sql' for what needs to be stored here.
+def insert2CategoryTable(businessID, name):
+    # TODO: Add function call to business table insert code.
+    # At this point we should already be connected to the database
+    sql_str = "INSERT INTO Category (businessID, name) " \
+    "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(name) + ");"
 
 
 def insert2OpenTimesTable():
