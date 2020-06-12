@@ -21,7 +21,7 @@ def printInsertError(tableName, error):
     print('Error message:', error)
 
 
-def getDBConnectionString():
+def getDBConnection():
     return psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
 
 
@@ -32,9 +32,9 @@ def insert2BusinessTable():
         count_line = 0
 
         try:
-            conn = getDBConnectionString()
+            conn = getDBConnection()
         except Exception as error:
-            printInsertError()
+            printDBConnectionError()
             
         cur = conn.cursor()
 
@@ -42,6 +42,7 @@ def insert2BusinessTable():
             data = json.loads(line)
 
             # TODO: Associate each businessID with OpenTimes table.
+            # TODO: Associate each businessID with related categories.
             # See 'milestone2Schema.sql' for details.
 
             sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, numReviews, businessState, stars, openStatus, zip) " \
@@ -73,7 +74,7 @@ def insert2UserTable():
         count_line = 0
 
         try:
-            conn = getDBConnectionString()
+            conn = getDBConnection()
         except Exception as error:
             printDBConnectionError()
 
@@ -116,7 +117,7 @@ def insert2CheckInTable():
         count_line = 0
 
         try:
-            conn = getDBConnectionString()
+            conn = getDBConnection()
         except Exception as error:
             printDBConnectionError()
 
@@ -152,7 +153,7 @@ def insert2ReviewTable():
         count_line = 0
 
         try:
-            conn = getDBConnectionString()
+            conn = getDBConnection()
         except Exception as error:
             printDBConnectionError()
 
@@ -196,7 +197,7 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
 
 
 def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
-    # Check 'milestone2Schema.sql' for what needs to be stored here.
+    # TODO: Add function call to business table insert code.
     sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
     "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(day) + "','" \
     cleanStr4SQL(openTime) + "','" + cleanStr4SQL(closeTime) + ");"
@@ -209,12 +210,30 @@ def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, co
     dbConnection.commit()
 
 
-def insert2UserFavoriteTable():
-    # Check 'milestone2Schema.sql' for what needs to be stored here.
+def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor):
+    # TODO: Add function call to user table insert code.
+    sql_str = "INSERT INTO UserFavorite (userID, businessID) " \
+    "VALUES ('" + cleanStr4SQL(userID) + cleanStr4SQL(businessID) + ");"
+
+    try:
+        connectionCursor.execute(sql_str)
+    except Exception as error:
+        printInsertError("UserFavorite", error)
+
+    dbConnection.commit()
 
 
-def insert2UserFriendTable():
-    # Check 'milestone2Schema.sql' for what needs to be stored here.    
+def insert2UserFriendTable(userID, friendUserID):
+    # TODO: Add function call to friend table insert code.
+    sql_str = "INSERT INTO UserFriend (userID, friendUserID) " \
+    "VALUES ('" + cleanStr4SQL(userID) + cleanStr4SQL(friendUserID) + ");"
+
+    try:
+        connectionCursor.execute(sql_str)
+    except Exception as error:
+        printInsertError("UserFriend", error)
+
+    dbConnection.commit()
 
 
 insert2BusinessTable()
