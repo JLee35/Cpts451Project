@@ -17,7 +17,6 @@ def insert2BusinessTable():
         line = f.readline()
         count_line = 0
 
-        #connect to yelpdb database on postgres server using psycopg2
         try:
             conn = psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
         except Exception as error:
@@ -27,7 +26,10 @@ def insert2BusinessTable():
 
         while line:
             data = json.loads(line)
-            # Generate the INSERT statement for the current business
+
+            # TODO: Associate each businessID with OpenTimes table.
+            # See 'milestone2Schema.sql' for details.
+
             sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, numReviews, businessState, stars, openStatus, zip) " \
                       "VALUES ('" + clearnStr4SQL(data['businessID']) + "','" + clearnStr4SQL(data['businessName']) + "','" + clearnStr4SQL(data['address']) + "','" \
                       str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + str(data['numCheckins'])  \
@@ -66,12 +68,17 @@ def insert2UserTable():
 
         while line:
             data = json.loads(line)
-            # Generate the INSERT statement for the current user
-            sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, isFriendsWith, numFans, votes, favorites) " \
+
+            # TODO: If you look at the schema file, UserFriend is a table that stores a userID and friendUserID.
+            # The data also contains user favorites, but that also needs to be stored in a seperate table.
+            # We need to populate n number of tables for each of the user's friends and favorites.
+            # See 'milestone2Schema.sql' for details.
+
+            sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, numFans, votes) " \
                       "VALUES ('" + clearnStr4SQL(data['userID']) + "','" + clearnStr4SQL(data['firstName']) + "','" + clearnStr4SQL(data['lastName']) + "','" + \
                       str(data['avgStars']) + "','" +  clearnStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
-                      clearnStr4SQL(data['info']) + "','" + clearnStr4SQL(data['isFanOf']) + "','" + clearnStr4SQL(data['isFriendsWith']) + "','" + \
-                      str(data['numFans']) + "','" + str(data['votes']) + "','" + clearnStr4SQL(data['favorites']) + ");"
+                      clearnStr4SQL(data['info']) + "','" + clearnStr4SQL(data['isFanOf']) + "','" + \
+                      str(data['numFans']) + "','" + str(data['votes']) + "','" + ");"
 
             try:
                 cur.execute(sql_str)
@@ -105,7 +112,7 @@ def insert2CheckInTable():
 
         while line:
             data = json.loads(line)
-            # Generate the INSERT statement for the current check in
+
             sql_str = "INSERT INTO CheckIn (checkInDate, checkInTime, checkInBusinessID, checkInUserID) " \
                       "VALUES ('" + clearnStr4SQL(data['checkInDate']) + "','" + clearnStr4SQL(data['checkInTime']) + "','" +  \
                       clearnStr4SQL(data['checkInBusinessID']) + "','" + clearnStr4SQL(data['checkInUserID']) + ");"
@@ -142,7 +149,7 @@ def insert2ReviewTable():
 
         while line:
             data = json.loads(line)
-            # Generate the INSERT statement for the current review
+            
             sql_str = "INSERT INTO Review (reviewID, userID, businessID, stars, content) " \
                       "VALUES ('" + clearnStr4SQL(data['reviewID']) + "','" + clearnStr4SQL(data['userID']) + "','" + \
                       clearnStr4SQL(data['businessID']) + "','" + str(data['stars']) + "','" + str(data['content']) + ");"
@@ -164,8 +171,27 @@ def insert2ReviewTable():
     print(count_line)
     f.close()
 
+def insert2CategoryTable():
+    # Check 'milestone2Schema.sql' for what needs to be stored here.
+
+
+def insert2OpenTimesTable():
+    # Check 'milestone2Schema.sql' for what needs to be stored here.
+
+
+def insert2UserFavoriteTable():
+    # Check 'milestone2Schema.sql' for what needs to be stored here.
+
+
+def insert2UserFriendTable():
+    # Check 'milestone2Schema.sql' for what needs to be stored here.    
+
 
 insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
 insert2ReviewTable()
+insert2CategoryTable()
+insert2OpenTimesTable()
+insert2UserFavoriteTable()
+insert2UserFriendTable()
