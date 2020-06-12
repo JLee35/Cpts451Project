@@ -11,6 +11,15 @@ def int2BoolStr (value):
     else:
         return 'True'
 
+def printDBConnectionError(error):
+    print('ERROR: Unable to connect to the database!')
+    print('Error message:', error)
+
+
+def printInsertError(tableName, error):
+    print('ERROR: Insert to ' + tableName + ' table failed!')
+    print('Error message:', error)
+
 
 def getDBConnectionString():
     return psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
@@ -25,8 +34,8 @@ def insert2BusinessTable():
         try:
             conn = getDBConnectionString()
         except Exception as error:
-            print('ERROR: Unable to connect to the database!')
-            print('Error message:', error)
+            printInsertError()
+            
         cur = conn.cursor()
 
         while line:
@@ -44,8 +53,7 @@ def insert2BusinessTable():
             try:
                 cur.execute(sql_str)
             except Exception as error:
-                print('ERROR: Insert to Business table failed!')
-                print('Error message:', error)
+                printInsertError("Business", error)
 
             conn.commit()
 
@@ -67,8 +75,8 @@ def insert2UserTable():
         try:
             conn = getDBConnectionString()
         except Exception as error:
-            print('ERROR: Unable to connect to the database!')
-            print('Error message:', error)
+            printDBConnectionError()
+
         cur = conn.cursor()
 
         while line:
@@ -88,8 +96,7 @@ def insert2UserTable():
             try:
                 cur.execute(sql_str)
             except Exception as error:
-                print('ERROR: Insert to UserTable failed!')
-                print('Error message:', error)
+                printInsertError("UserTable", error)
 
             conn.commit()
 
@@ -111,8 +118,8 @@ def insert2CheckInTable():
         try:
             conn = getDBConnectionString()
         except Exception as error:
-            print('ERROR: Unable to connect to the database!')
-            print('Error message:', error)
+            printDBConnectionError()
+
         cur = conn.cursor()
 
         while line:
@@ -125,8 +132,7 @@ def insert2CheckInTable():
             try:
                 cur.execute(sql_str)
             except Exception as error:
-                print('ERROR: Insert to CheckIn table failed!')
-                print('Error message:', error)
+                printInsertError("CheckIn", error)
 
             conn.commit()
 
@@ -148,8 +154,8 @@ def insert2ReviewTable():
         try:
             conn = getDBConnectionString()
         except Exception as error:
-            print('ERROR: Unable to connect to the database!')
-            print('Error message:', error)
+            printDBConnectionError()
+
         cur = conn.cursor()
 
         while line:
@@ -162,8 +168,7 @@ def insert2ReviewTable():
             try:
                 cur.execute(sql_str)
             except Exception as error:
-                print('ERROR: Insert to Review table failed!')
-                print('Error message:', error)
+                printInsertError("Review", error)
 
             conn.commit()
 
@@ -176,15 +181,25 @@ def insert2ReviewTable():
     print(count_line)
     f.close()
 
-def insert2CategoryTable(businessID, name):
+def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
     # TODO: Add function call to business table insert code.
     # At this point we should already be connected to the database
     sql_str = "INSERT INTO Category (businessID, name) " \
     "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(name) + ");"
 
+    try:
+        connectionCursor.execute(sql_str)
+    except Exception as error:
+        printInsertError("Table", error)
 
-def insert2OpenTimesTable():
+    dbConnection.commit()
+
+
+def insert2OpenTimesTable(businessID, day, openTime, closeTime):
     # Check 'milestone2Schema.sql' for what needs to be stored here.
+    sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
+    "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(day) + "','" \
+    cleanStr4SQL(openTime) + "','" + cleanStr4SQL(closeTime) + ");"
 
 
 def insert2UserFavoriteTable():
