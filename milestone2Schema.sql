@@ -29,11 +29,9 @@ CREATE TABLE UserTable (
 	latitude real,
 	longitude real,
 	info char(120),
-	isFanOf varchar, /* TODO (Team): Is this correct? */
-	isFriendsWith varchar, /* TODO (Team): Is this correct? */
+	isFanOf varchar, /* TODO (Team): What are they a fan of? Business or person? */
 	numFans int,
-	votes int,
-	favorites varchar /* Does this need to point to a list of businessIDs? */
+	votes int
 );
 
 CREATE TABLE CheckIn (
@@ -45,7 +43,6 @@ CREATE TABLE CheckIn (
 	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID),
 	FOREIGN KEY (checkInUserID) REFERENCES UserTable(userID)
 
-	/* TODO (Team): Double check relationships are correct. */
 );
 
 CREATE TABLE Category (
@@ -70,4 +67,20 @@ CREATE TABLE OpenTimes (
 	closeTime time NOT NULL,
 	PRIMARY KEY(businessID, day),
 	FOREIGN KEY (businessID) REFERENCES Business(businessID)
+);
+
+CREATE TABLE UserFavorite (
+	userID varchar,
+	businessID varchar,
+	PRIMARY KEY(userID, businessID),
+	FOREIGN KEY (userID) REFERENCES UserTable(userID),
+	FOREIGN KEY (businessID) REFERENCES Business(businessID)
+);
+
+CREATE TABLE UserFriend (
+	userID varchar,
+	friendUserID varchar,
+	PRIMARY KEY (userID, friendUserID),
+	FOREIGN KEY (userID) REFERENCES UserTable(userID),
+	FOREIGN KEY (friendUserID) REFERENCES UserTable(userID)
 );
