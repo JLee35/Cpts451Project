@@ -195,11 +195,18 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
     dbConnection.commit()
 
 
-def insert2OpenTimesTable(businessID, day, openTime, closeTime):
+def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
     # Check 'milestone2Schema.sql' for what needs to be stored here.
     sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
     "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(day) + "','" \
     cleanStr4SQL(openTime) + "','" + cleanStr4SQL(closeTime) + ");"
+
+    try:
+        connectionCursor.execute(sql_str)
+    except Exception as error:
+        printInsertError("OpenTimes", error)
+
+    dbConnection.commit()
 
 
 def insert2UserFavoriteTable():
