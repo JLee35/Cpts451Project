@@ -90,8 +90,7 @@ def insert2UserTable():
 
             userID = cleanStr4SQL(data['userID'])
 
-            # TODO: If you look at the schema file, UserFriend is a table that stores a userID and friendUserID.
-            # The data also contains user favorites, but that also needs to be stored in a seperate table.
+            # TODO: The data contains user favorites, but that also needs to be stored in a seperate table.
             # We need to populate n number of tables for each of the user's friends and favorites.
             # See 'milestone2Schema.sql' for details.
 
@@ -101,6 +100,10 @@ def insert2UserTable():
                       cleanStr4SQL(data['info']) + "','" + cleanStr4SQL(data['isFanOf']) + "','" + \
                       str(data['numFans']) + "','" + str(data['votes']) + "','" + ");"
 
+            # Fill UserFriend table with userID and each friendUserID
+            for item in data['friends']:
+                insert2UserFriendTable(userID, cleanStr4SQL(item))
+                
             try:
                 cur.execute(sql_str)
             except Exception as error:
@@ -193,7 +196,7 @@ def insert2ReviewTable():
 # Called by 'insert2BusinessTable' and populates Category Table for each business.
 def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
     sql_str = "INSERT INTO Category (businessID, name) " \
-    "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(name) + ");"
+    "VALUES ('" + businessID + "','" + name + ");"
 
     try:
         connectionCursor.execute(sql_str)
@@ -205,9 +208,8 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
 
 # Called by 'insert2BusinessTable' and populates OpenTimes table for each business.
 def insert2OpenTimesTable(businessID, day, hours, dbConnection, connectionCursor):
-    sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
-    "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(day) + "','" \
-    cleanStr4SQL(openTime) + "','" + cleanStr4SQL(closeTime) + ");"
+    sql_str = "INSERT INTO OpenTimes (businessID, day, hours) " \
+    "VALUES ('" + businessID + "','" + day + "','" + hours + ");"
 
     try:
         connectionCursor.execute(sql_str)
@@ -220,7 +222,7 @@ def insert2OpenTimesTable(businessID, day, hours, dbConnection, connectionCursor
 def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor):
     # TODO: Add function call to user table insert code.
     sql_str = "INSERT INTO UserFavorite (userID, businessID) " \
-    "VALUES ('" + cleanStr4SQL(userID) + cleanStr4SQL(businessID) + ");"
+    "VALUES ('" + userID + businessID + ");"
 
     try:
         connectionCursor.execute(sql_str)
@@ -233,7 +235,7 @@ def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor)
 def insert2UserFriendTable(userID, friendUserID):
     # TODO: Add function call to friend table insert code.
     sql_str = "INSERT INTO UserFriend (userID, friendUserID) " \
-    "VALUES ('" + cleanStr4SQL(userID) + cleanStr4SQL(friendUserID) + ");"
+    "VALUES ('" + userID + friendUserID + ");"
 
     try:
         connectionCursor.execute(sql_str)
