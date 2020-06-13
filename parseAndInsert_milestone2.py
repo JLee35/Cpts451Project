@@ -54,7 +54,9 @@ def insert2BusinessTable():
 
             # Fill OpenTimes table for each business.
             for key,value in data['hours'].items():
-                insert2OpenTimesTable(businessID, cleanStr4SQL(key), cleanStr4SQL(value), conn, cur)
+                openTime = value.split('-')[0]
+                closeTime = value.split('-')[1]
+                insert2OpenTimesTable(businessID, cleanStr4SQL(key), cleanStr4SQL(openTime), cleanStr4SQL(closeTime), conn, cur)
             
             try:
                 cur.execute(sql_str)
@@ -207,9 +209,9 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
 
 
 # Called by 'insert2BusinessTable' and populates OpenTimes table for each business.
-def insert2OpenTimesTable(businessID, day, hours, dbConnection, connectionCursor):
-    sql_str = "INSERT INTO OpenTimes (businessID, day, hours) " \
-    "VALUES ('" + businessID + "','" + day + "','" + hours + ");"
+def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
+    sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
+    "VALUES ('" + businessID + "','" + day + "','" + openTime + closeTime + ");"
 
     try:
         connectionCursor.execute(sql_str)
