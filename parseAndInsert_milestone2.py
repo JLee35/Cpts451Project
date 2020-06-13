@@ -3,7 +3,8 @@ import sys
 import psycopg2
 
 # TODO: Update path for input files.
-dataPath = '~/Desktop/school/cpts451/yelpdata/'
+# '~/Desktop/school/cpts451/yelpdata/'
+dataPath = ''
 
 def cleanStr4SQL(s):
     return s.replace("'","`").replace("\n"," ")
@@ -44,13 +45,13 @@ def insert2BusinessTable():
 
         while line:
             data = json.loads(line)
-            businessID = cleanStr4SQL(data['businessID'])
+            businessID = cleanStr4SQL(data['business_id'])
 
             sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
-                      "VALUES ('" + businessID + "','" + cleanStr4SQL(data['businessName']) + "','" + cleanStr4SQL(data['address']) + "','" \
-                      str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + "0"  \
-                      + "','" + "0" + "','" + "0.0" + "','" + cleanStr4SQL(data['businessState']) + "','" + str(data['stars']) + "','" + str(data['openStatus']) |
-                      + "','" + str(data['zip']) + ");"
+                      + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
+                      + str(data['stars']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL('temp') + "','" + "0"  \
+                      + "','" + "0" + "','" + "0.0" + "','" + cleanStr4SQL(data['state']) + "','" + str(0) + "','" + str(data['is_open']) \
+                      + "','" + str(data['postal_code']) + "');"
 
             # Fill Categories table for each business.
             for item in data['categories']:
@@ -202,7 +203,7 @@ def insert2ReviewTable():
 # Called by 'insert2BusinessTable' and populates Category Table for each business.
 def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
     sql_str = "INSERT INTO Category (businessID, name) " \
-    "VALUES ('" + businessID + "','" + name + ");"
+    "VALUES ('" + businessID + "','" + name + "');"
 
     try:
         connectionCursor.execute(sql_str)
@@ -215,7 +216,7 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
 # Called by 'insert2BusinessTable' and populates OpenTimes table for each business.
 def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
     sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
-    "VALUES ('" + businessID + "','" + day + "','" + openTime + closeTime + ");"
+    "VALUES ('" + businessID + "','" + day + "','" + openTime + closeTime + "');"
 
     try:
         connectionCursor.execute(sql_str)
@@ -228,7 +229,7 @@ def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, co
 # Called by 'insert2UserTable' and populates UserFavorites table for each user.
 def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor):
     sql_str = "INSERT INTO UserFavorite (userID, businessID) " \
-    "VALUES ('" + userID + businessID + ");"
+    "VALUES ('" + userID + businessID + "');"
 
     try:
         connectionCursor.execute(sql_str)
@@ -241,7 +242,7 @@ def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor)
 # Called by 'insert2UserTable' and populates UserFriend table for each user.
 def insert2UserFriendTable(userID, friendUserID):
     sql_str = "INSERT INTO UserFriend (userID, friendUserID) " \
-    "VALUES ('" + userID + friendUserID + ");"
+    "VALUES ('" + userID + friendUserID + "');"
 
     try:
         connectionCursor.execute(sql_str)
