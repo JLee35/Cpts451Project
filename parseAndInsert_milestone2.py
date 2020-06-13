@@ -90,20 +90,20 @@ def insert2UserTable():
 
             userID = cleanStr4SQL(data['userID'])
 
-            # TODO: The data contains user favorites, but that also needs to be stored in a seperate table.
-            # We need to populate n number of tables for each of the user's friends and favorites.
-            # See 'milestone2Schema.sql' for details.
-
             sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, numFans, votes) " \
                       "VALUES ('" + userID + "','" + cleanStr4SQL(data['firstName']) + "','" + cleanStr4SQL(data['lastName']) + "','" + \
                       str(data['avgStars']) + "','" +  cleanStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
                       cleanStr4SQL(data['info']) + "','" + cleanStr4SQL(data['isFanOf']) + "','" + \
                       str(data['numFans']) + "','" + str(data['votes']) + "','" + ");"
 
-            # Fill UserFriend table with userID and each friendUserID
+            # Fill UserFriend table with userID and each friendUserID.
             for item in data['friends']:
                 insert2UserFriendTable(userID, cleanStr4SQL(item))
-                
+
+            # Fill UserFavorite table with userID and each favored businessID.
+            for item in data['favorites']:
+                insert2UserFavoriteTable(userID, cleanStr4SQL(item), conn, cur)
+
             try:
                 cur.execute(sql_str)
             except Exception as error:
