@@ -40,17 +40,22 @@ def insert2BusinessTable():
 
         while line:
             data = json.loads(line)
-
-            # TODO: Associate each businessID with OpenTimes table.
-            # TODO: Associate each businessID with related categories.
-            # See 'milestone2Schema.sql' for details.
+            businessID = cleanStr4SQL(data['businessID'])
 
             sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, numReviews, businessState, stars, openStatus, zip) " \
-                      "VALUES ('" + cleanStr4SQL(data['businessID']) + "','" + cleanStr4SQL(data['businessName']) + "','" + cleanStr4SQL(data['address']) + "','" \
+                      "VALUES ('" + businessID + "','" + cleanStr4SQL(data['businessName']) + "','" + cleanStr4SQL(data['address']) + "','" \
                       str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + str(data['numCheckins'])  \
                       + "','" + str(data['numReviews']) + "','" + cleanStr4SQL(data['businessState']) + "','" + str(data['stars']) + "','" + str(data['openStatus']) |
                       + "','" + str(data['zip']) + ");"
 
+            # Fill Categories table for each business.
+            for item in data['categories']:
+                insert2CategoryTable(businessID, cleanStr4SQL(item), conn, cur)
+
+            # Fill OpenTimes table for each business.
+            for key,value in data['hours'].items():
+                insert2OpenTimesTable(businessID, cleanStr4SQL(key), cleanStr4SQL(value), conn, cur)
+            
             try:
                 cur.execute(sql_str)
             except Exception as error:
@@ -83,13 +88,15 @@ def insert2UserTable():
         while line:
             data = json.loads(line)
 
+            userID = cleanStr4SQL(data['userID'])
+
             # TODO: If you look at the schema file, UserFriend is a table that stores a userID and friendUserID.
             # The data also contains user favorites, but that also needs to be stored in a seperate table.
             # We need to populate n number of tables for each of the user's friends and favorites.
             # See 'milestone2Schema.sql' for details.
 
             sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, numFans, votes) " \
-                      "VALUES ('" + cleanStr4SQL(data['userID']) + "','" + cleanStr4SQL(data['firstName']) + "','" + cleanStr4SQL(data['lastName']) + "','" + \
+                      "VALUES ('" + userID + "','" + cleanStr4SQL(data['firstName']) + "','" + cleanStr4SQL(data['lastName']) + "','" + \
                       str(data['avgStars']) + "','" +  cleanStr4SQL(data['dateJoined']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "','" +  \
                       cleanStr4SQL(data['info']) + "','" + cleanStr4SQL(data['isFanOf']) + "','" + \
                       str(data['numFans']) + "','" + str(data['votes']) + "','" + ");"
@@ -182,9 +189,9 @@ def insert2ReviewTable():
     print(count_line)
     f.close()
 
+
+# Called by 'insert2BusinessTable' and populates Category Table for each business.
 def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
-    # TODO: Add function call to business table insert code.
-    # At this point we should already be connected to the database
     sql_str = "INSERT INTO Category (businessID, name) " \
     "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(name) + ");"
 
@@ -196,8 +203,8 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
     dbConnection.commit()
 
 
-def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
-    # TODO: Add function call to business table insert code.
+# Called by 'insert2BusinessTable' and populates OpenTimes table for each business.
+def insert2OpenTimesTable(businessID, day, hours, dbConnection, connectionCursor):
     sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
     "VALUES ('" + cleanStr4SQL(businessID) + "','" + cleanStr4SQL(day) + "','" \
     cleanStr4SQL(openTime) + "','" + cleanStr4SQL(closeTime) + ");"

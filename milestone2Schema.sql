@@ -63,8 +63,7 @@ CREATE TABLE Review (
 CREATE TABLE OpenTimes (
 	businessID varchar,
 	day varchar,
-	openTime time NOT NULL,
-	closeTime time NOT NULL,
+	hours varchar NOT NULL, # i.e. 1300-2200 (1pm to 10pm)
 	PRIMARY KEY(businessID, day),
 	FOREIGN KEY (businessID) REFERENCES Business(businessID)
 );
