@@ -2,6 +2,9 @@ import json
 import sys
 import psycopg2
 
+# TODO: Update path for input files.
+dataPath = '~/Desktop/school/cpts451/yelpdata/'
+
 def cleanStr4SQL(s):
     return s.replace("'","`").replace("\n"," ")
 
@@ -22,12 +25,13 @@ def printInsertError(tableName, error):
 
 
 def getDBConnection():
+    # TODO: Update dbname, user, host, and password for your machine.
     return psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
 
 
 def insert2BusinessTable():
     #reading the JSON file
-    with open('./yelp_business.JSON','r') as f:    #TODO: update path for the input file
+    with open(dataPath + 'yelp_business.JSON','r') as f:
         line = f.readline()
         count_line = 0
 
@@ -76,7 +80,7 @@ def insert2BusinessTable():
 
 
 def insert2UserTable():
-    with open('./yelp_user.JSON','r') as f:    #TODO: update path for the input file
+    with open(dataPath + 'yelp_user.JSON','r') as f:
         line = f.readline()
         count_line = 0
 
@@ -124,7 +128,7 @@ def insert2UserTable():
 
 
 def insert2CheckInTable():
-    with open('./yelp_checkin.JSON','r') as f:    #TODO: update path for the input file
+    with open(dataPath + 'yelp_checkin.JSON','r') as f:
         line = f.readline()
         count_line = 0
 
@@ -160,7 +164,7 @@ def insert2CheckInTable():
 
 
 def insert2ReviewTable():
-    with open('./yelp_review.JSON','r') as f:    #TODO: update path for the input file
+    with open(dataPath + 'yelp_review.JSON','r') as f:
         line = f.readline()
         count_line = 0
 
