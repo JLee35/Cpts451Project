@@ -53,6 +53,11 @@ def insert2BusinessTable():
                       + "','" + "0" + "','" + "0.0" + "','" + cleanStr4SQL(data['state']) + "','" + str(0) + "','" + str(data['is_open']) \
                       + "','" + str(data['postal_code']) + "');"
 
+            try:
+                cur.execute(sql_str)
+            except Exception as error:
+                printInsertError("Business", error)
+
             # Fill Categories table for each business.
             for item in data['categories']:
                 insert2CategoryTable(businessID, cleanStr4SQL(item), conn, cur)
@@ -62,10 +67,6 @@ def insert2BusinessTable():
                 openTime = value.split('-')[0]
                 closeTime = value.split('-')[1]
                 insert2OpenTimesTable(businessID, cleanStr4SQL(key), cleanStr4SQL(openTime), cleanStr4SQL(closeTime), conn, cur)
-            
-            try:
-                cur.execute(sql_str)
-            except Exception as error:
                 printInsertError("Business", error)
 
             conn.commit()
@@ -216,7 +217,7 @@ def insert2CategoryTable(businessID, name, dbConnection, connectionCursor):
 # Called by 'insert2BusinessTable' and populates OpenTimes table for each business.
 def insert2OpenTimesTable(businessID, day, openTime, closeTime, dbConnection, connectionCursor):
     sql_str = "INSERT INTO OpenTimes (businessID, day, openTime, closeTime) " \
-    "VALUES ('" + businessID + "','" + day + "','" + openTime + closeTime + "');"
+    "VALUES ('" + businessID + "','" + day + "','" + openTime + "','" + closeTime + "');"
 
     try:
         connectionCursor.execute(sql_str)
