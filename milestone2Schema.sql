@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS UserTable CASCADE;
 DROP TABLE IF EXISTS CheckIn CASCADE;
 DROP TABLE IF EXISTS Category CASCADE;
 DROP TABLE IF EXISTS Review CASCADE;
+DROP TABLE IF EXISTS OpenTimes CASCADE;
+DROP TABLE IF EXISTS UserFavorite CASCADE;
+DROP TABLE IF EXISTS UserFriend CASCADE;
 
 CREATE TABLE Business (
 	businessID varchar PRIMARY KEY,
@@ -63,7 +66,7 @@ CREATE TABLE Review (
 CREATE TABLE OpenTimes (
 	businessID varchar,
 	day varchar,
-	hours varchar NOT NULL, # i.e. 1300-2200 (1pm to 10pm)
+	hours varchar NOT NULL, /* i.e. 1300-2200 (1pm to 10pm) */
 	PRIMARY KEY(businessID, day),
 	FOREIGN KEY (businessID) REFERENCES Business(businessID)
 );
