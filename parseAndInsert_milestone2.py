@@ -219,8 +219,8 @@ def insert2OpenTimesTable(businessID, day, hours, dbConnection, connectionCursor
     dbConnection.commit()
 
 
+# Called by 'insert2UserTable' and populates UserFavorites table for each user.
 def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor):
-    # TODO: Add function call to user table insert code.
     sql_str = "INSERT INTO UserFavorite (userID, businessID) " \
     "VALUES ('" + userID + businessID + ");"
 
@@ -232,8 +232,8 @@ def insert2UserFavoriteTable(userID, businessID, dbConnection, connectionCursor)
     dbConnection.commit()
 
 
+# Called by 'insert2UserTable' and populates UserFriend table for each user.
 def insert2UserFriendTable(userID, friendUserID):
-    # TODO: Add function call to friend table insert code.
     sql_str = "INSERT INTO UserFriend (userID, friendUserID) " \
     "VALUES ('" + userID + friendUserID + ");"
 
