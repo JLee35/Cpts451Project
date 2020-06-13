@@ -42,10 +42,10 @@ def insert2BusinessTable():
             data = json.loads(line)
             businessID = cleanStr4SQL(data['businessID'])
 
-            sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, numReviews, businessState, stars, openStatus, zip) " \
+            sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
                       "VALUES ('" + businessID + "','" + cleanStr4SQL(data['businessName']) + "','" + cleanStr4SQL(data['address']) + "','" \
-                      str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + str(data['numCheckins'])  \
-                      + "','" + str(data['numReviews']) + "','" + cleanStr4SQL(data['businessState']) + "','" + str(data['stars']) + "','" + str(data['openStatus']) |
+                      str(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL(data['detailedInfo']) + "','" + "0"  \
+                      + "','" + "0" + "','" + "0.0" + "','" + cleanStr4SQL(data['businessState']) + "','" + str(data['stars']) + "','" + str(data['openStatus']) |
                       + "','" + str(data['zip']) + ");"
 
             # Fill Categories table for each business.

@@ -16,7 +16,8 @@ CREATE TABLE Business (
 	city varchar,
 	detailedInfo char(120),
 	numCheckins int,
-	numReviews int,
+	reviewCount int,
+	reviewRating real,
 	businessState varchar,
 	stars real,
 	openStatus int, /* 0 = closed, 1 = open */
