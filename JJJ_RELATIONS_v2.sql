@@ -39,13 +39,12 @@ CREATE TABLE UserTable (
 );
 
 CREATE TABLE CheckIn (
-	checkInDate date,
+	checkInDay varchar,
 	checkInTime time,
+	checkInAmount int,
 	checkInBusinessID varchar NOT NULL,
-	checkInUserID varchar NOT NULL,
-	PRIMARY KEY (checkInUserID, checkInBusinessID, checkInDate, checkInTime),
-	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID),
-	FOREIGN KEY (checkInUserID) REFERENCES UserTable(userID)
+	PRIMARY KEY (checkInBusinessID, checkInDay, checkInTime),
+	FOREIGN KEY (checkInBusinessID) REFERENCES Business(businessID)
 
 );
 
@@ -61,7 +60,7 @@ CREATE TABLE Review (
 	userID varchar NOT NULL,
 	businessID varchar NOT NULL,
 	stars real,
-	content char(120)
+	content char(2000)
 );
 
 CREATE TABLE OpenTimes (
