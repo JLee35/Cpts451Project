@@ -4,8 +4,7 @@ import psycopg2
 
 #
 # TODO: Update path for input files.
-# '~/Desktop/school/cpts451/yelpdata/'
-dataPath = ''
+dataPath = '~/Desktop/school/cpts451/yelpdata/'
 
 def cleanStr4SQL(s):
 	return s.replace("'","`").replace("\n"," ")
@@ -110,10 +109,6 @@ def insert2UserTable():
 				cur.execute(sql_str)
 			except Exception as error:
 				printInsertError("UserTable", error)
-
-			# Fill UserFriend table with userID and each friendUserID.
-			#for item in data['friends']:
-				#insert2UserFriendTable(userID, cleanStr4SQL(item), conn, cur)
 
 			# Fill UserFavorite table with userID and each favored businessID.
 			#for item in data['favorites']:
