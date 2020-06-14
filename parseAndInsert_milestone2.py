@@ -98,20 +98,14 @@ def insert2UserTable():
 
 			userID = cleanStr4SQL(data['user_id'])
 
-			sql_str = "INSERT INTO UserTable (userID, firstName, lastName, avgStars, dateJoined, latitude, longitude, info, isFanOf, numFans, votes) " \
-					  "VALUES ('" + userID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL('temp') + "','" + \
-					  str(data['average_stars']) + "','" +  cleanStr4SQL(data['yelping_since']) + "','" + str(0) + "','" + str(0) + "','" +  \
-					  cleanStr4SQL('temp') + "','" + cleanStr4SQL('temp') + "','" + \
-					  str(data['fans']) + "','" + str(data['review_count']) + "');"
+            sql_str = "INSERT INTO UserTable (userID, name, avgStars, yelpingSince, latitude, longitude, numFans, votes) " \
+                      "VALUES ('" + userID + "','" + cleanStr4SQL(data['name']) + "','" + str(data['average_stars']) + "','" + \
+                      cleanStr4SQL(data['yelping_since']) + "','" + str(0) + "','" + str(0) + "','" + str(data['fans']) + "','" + str(data['review_count']) + "');"
 
 			try:
 				cur.execute(sql_str)
 			except Exception as error:
 				printInsertError("UserTable", error)
-
-			# Fill UserFavorite table with userID and each favored businessID.
-			#for item in data['favorites']:
-				#insert2UserFavoriteTable(userID, cleanStr4SQL(item), conn, cur)
 
 			conn.commit()
 

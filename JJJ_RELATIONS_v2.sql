@@ -25,14 +25,11 @@ CREATE TABLE Business (
 
 CREATE TABLE UserTable (
 	userID varchar PRIMARY KEY,
-	firstName varchar,
-	lastName varchar,
+	name varchar,
 	avgStars real,
-	dateJoined Date,
+	yelpingSince date,
 	latitude real,
 	longitude real,
-	info char(120),
-	isFanOf varchar, /* TODO (Team): What are they a fan of? Business or person? */
 	numFans int,
 	votes int
 );
