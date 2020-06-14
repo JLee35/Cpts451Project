@@ -5,4 +5,4 @@ UPDATE business
 SET reviewcount = (SELECT count(businessid) from review WHERE business.businessid = review.businessid)
 
 UPDATE business
-SET reviewrating = (SELECT AVG(stars) from review WHERE business.businessid = review.businessid)
+SET reviewrating = (SELECT SUM(stars) from review WHERE business.businessid = review.businessid) / business.reviewcount
