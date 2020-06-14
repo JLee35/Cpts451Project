@@ -86,26 +86,50 @@ namespace Milestone1
             DataGridTextColumn nameCol = new DataGridTextColumn();
             nameCol.Binding = new Binding("businessName");
             nameCol.Header = "BusinessName";
-            nameCol.Width = 255;
+            nameCol.Width = 200;
             businessGrid.Columns.Add(nameCol);
+
+            DataGridTextColumn addressCol = new DataGridTextColumn();
+            addressCol.Binding = new Binding("address");
+            addressCol.Header = "Address";
+            addressCol.Width = 200;
+            businessGrid.Columns.Add(addressCol);
+
+            DataGridTextColumn cityCol = new DataGridTextColumn();
+            cityCol.Binding = new Binding("city");
+            cityCol.Header = "City";
+            cityCol.Width = 100;
+            businessGrid.Columns.Add(cityCol);
 
             DataGridTextColumn stateCol = new DataGridTextColumn();
             stateCol.Binding = new Binding("businessState");
             stateCol.Header = "State";
             stateCol.Width = 60;
             businessGrid.Columns.Add(stateCol);
-
-            DataGridTextColumn cityCol = new DataGridTextColumn();
-            cityCol.Binding = new Binding("city");
-            cityCol.Header = "City";
-            cityCol.Width = 150;
-            businessGrid.Columns.Add(cityCol);
-
+            
             DataGridTextColumn zipCol = new DataGridTextColumn();
             zipCol.Binding = new Binding("zip");
             zipCol.Header = "Postal Code";
-            zipCol.Width = 60;
+            zipCol.Width = 85;
             businessGrid.Columns.Add(zipCol);
+
+            DataGridTextColumn starCol = new DataGridTextColumn();
+            starCol.Binding = new Binding("stars");
+            starCol.Header = "Stars";
+            starCol.Width = 60;
+            businessGrid.Columns.Add(starCol);
+
+            DataGridTextColumn reviewCountCol = new DataGridTextColumn();
+            reviewCountCol.Binding = new Binding("reviewCount");
+            reviewCountCol.Header = "# Reviews";
+            reviewCountCol.Width = 85;
+            businessGrid.Columns.Add(reviewCountCol);
+
+            DataGridTextColumn numCheckinsCol = new DataGridTextColumn();
+            numCheckinsCol.Binding = new Binding("numCheckins");
+            numCheckinsCol.Header = "# Checkins";
+            numCheckinsCol.Width = 85;
+            businessGrid.Columns.Add(numCheckinsCol);
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -146,7 +170,7 @@ namespace Milestone1
             zipList.Items.Add(R.GetInt32(0));
         }
 
-        private void addCategry(NpgsqlDataReader R)
+        private void addCategory(NpgsqlDataReader R)
         {
             categoriesList.Items.Add(R.GetString(0));
         }
@@ -163,7 +187,7 @@ namespace Milestone1
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), businessState = R.GetString(1), city = R.GetString(2), zip = R.GetInt32(3) });
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -178,7 +202,7 @@ namespace Milestone1
                 executeQuery(sqlStr1, addZip);
 
                 // Populate businesses in city in listbox.
-                string sqlStr2 = "SELECT businessName, businessState, city, zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
         }
@@ -206,17 +230,16 @@ namespace Milestone1
             {
                 // Populate business categories within selected zip.
                 string sqlStr1 = "SELECT distinct name FROM Category, Business WHERE Business.businessID = Category.businessID AND zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
-                executeQuery(sqlStr1, addCategry);
+                executeQuery(sqlStr1, addCategory);
 
                 // Populate businesses within zip in listbox.
-                string sqlStr2 = "SELECT businessName, businessState, city, zip FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
         }
 
         private void CategoriesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            businessGrid.Items.Clear();
             if (categoriesList.SelectedIndex > -1)
             {
 
