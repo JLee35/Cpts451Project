@@ -81,7 +81,7 @@ namespace Milestone1
 
         private void loadBusinessNumbers ()
         {
-            string sqlStr1 = "SELECT count(*) FROM business WHERE businessState = (SELECT businessState FROM Business WHERE businessID = '" + this.businessID + "');";
+            string sqlStr1 = "SELECT count(*) FROM Business WHERE businessState = (SELECT businessState FROM Business WHERE businessID = '" + this.businessID + "');";
             excecuteQuery(sqlStr1, setNumInState);
             string sqlStr2 = "SELECT count(*) FROM Business WHERE city = (SELECT city FROM Business WHERE businessID = '" + this.businessID + "');";
             excecuteQuery(sqlStr2, setNumInCity);
