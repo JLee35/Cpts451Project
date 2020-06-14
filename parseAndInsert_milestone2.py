@@ -48,10 +48,10 @@ def insert2BusinessTable():
 			businessID = cleanStr4SQL(data['business_id'])
 
 			sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
-                      + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
-                      + cleanStr4SQL(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + str(0)  \
-                      + "','" + str(0) + "','" + str(0) + "','" + cleanStr4SQL(data['state']) + "','" + str(data['stars']) + "','" + str(data['is_open']) \
-                      + "','" + str(data['postal_code']) + "');"
+					  + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
+					  + str(0) + "','" + cleanStr4SQL(data['city']) + "','" + str(0)  \
+					  + "','" + str(0) + "','" + str(0) + "','" + cleanStr4SQL(data['state']) + "','" + str(data['stars']) + "','" + str(data['is_open']) \
+					  + "','" + str(data['postal_code']) + "');"
 
 			try:
 				cur.execute(sql_str)
@@ -98,9 +98,9 @@ def insert2UserTable():
 
 			userID = cleanStr4SQL(data['user_id'])
 
-            sql_str = "INSERT INTO UserTable (userID, name, avgStars, yelpingSince, latitude, longitude, numFans, votes) " \
-                      "VALUES ('" + userID + "','" + cleanStr4SQL(data['name']) + "','" + str(data['average_stars']) + "','" + \
-                      cleanStr4SQL(data['yelping_since']) + "','" + str(0) + "','" + str(0) + "','" + str(data['fans']) + "','" + str(data['review_count']) + "');"
+			sql_str = "INSERT INTO UserTable (userID, name, avgStars, yelpingSince, latitude, longitude, numFans, votes) " \
+				+ "VALUES ('" + userID + "','" + cleanStr4SQL(data['name']) + "','" + str(data['average_stars']) + "','" \
+				+ cleanStr4SQL(data['yelping_since']) + "','" + str(0) + "','" + str(0) + "','" + str(data['fans']) + "','" + str(data['review_count']) + "');"
 
 			try:
 				cur.execute(sql_str)
@@ -138,8 +138,8 @@ def insert2CheckInTable():
 			for day in data['time']:
 				for hour in data['time'][day]:
 					sql_str = "INSERT INTO CheckIn (checkInDay, checkInTime, checkInAmount, checkInBusinessID) " + \
-					  "VALUES ('" + cleanStr4SQL(day) + "','" + cleanStr4SQL(hour) + "','" + str(data['time'][day][hour]) + "','" + \
-					  business_id + "');"
+					   "VALUES ('" + cleanStr4SQL(day) + "','" + cleanStr4SQL(hour) + "','" + str(data['time'][day][hour]) + "','" + \
+					   business_id + "');"
 					try:
 						cur.execute(sql_str)
 					except Exception as error:
@@ -276,5 +276,4 @@ insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
 insert2ReviewTable()
-#insert2UserFavoriteTable()
 insert2UserFriendTable()
