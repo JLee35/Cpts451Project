@@ -21,12 +21,12 @@
         <Label x:Name="selectLocationLabel" Content="Select Location" HorizontalAlignment="Left" FontSize="16" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.562,-1.43" Height="32" Width="122"/>
         <ListBox x:Name="cityList" HorizontalAlignment="Left" Height="91" Margin="32,107,0,0" VerticalAlignment="Top" Width="146" SelectionChanged="CityList_SelectionChanged"/>
         <ListBox x:Name="zipList" HorizontalAlignment="Left" Height="110" Margin="32,42,0,0" VerticalAlignment="Top" Width="146"  SelectionChanged="ZipList_SelectionChanged" Grid.Row="1"/>
-        <ListBox x:Name="categoriesList" HorizontalAlignment="Left" Height="230" Margin="31,29.977,0,0" VerticalAlignment="Top" Width="146"   Grid.Row="2" SelectionChanged="CategoriesList_SelectionChanged"/>
+        <ListBox x:Name="categoriesList" HorizontalAlignment="Left" Height="195" Margin="31,30.2,0,0" VerticalAlignment="Top" Width="146"   Grid.Row="2" SelectionChanged="CategoriesList_SelectionChanged"/>
         <Label x:Name="searchResultsLabel" Content="Search Results" HorizontalAlignment="Left" FontSize="16" Margin="221,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.562,-1.43" Height="32" Width="122"/>
-        <Button x:Name="addCategoryButton" Content="Add" HorizontalAlignment="Left" Margin="33,267.977,0,0" Grid.Row="2" VerticalAlignment="Top" Width="58"/>
-        <Button x:Name="removeCategoryButton" Content="Remove" HorizontalAlignment="Left" Margin="119,267.977,0,0" Grid.Row="2" VerticalAlignment="Top" Width="58" RenderTransformOrigin="0.457,2.21"/>
+        <Button x:Name="addCategoryButton" Content="Add" HorizontalAlignment="Left" Margin="33,232.2,0,0" Grid.Row="2" VerticalAlignment="Top" Width="58" Height="16" Click="AddCategoryButton_Click"/>
+        <Button x:Name="removeCategoryButton" Content="Remove" HorizontalAlignment="Left" Margin="119,232.2,0,0" Grid.Row="2" VerticalAlignment="Top" Width="58" RenderTransformOrigin="0.457,2.21" Height="16" Click="RemoveCategoryButton_Click"/>
         <Button x:Name="searchBusinessButton" Content="Search Business" HorizontalAlignment="Left" Margin="33,393.977,0,0" Grid.Row="2" VerticalAlignment="Top" Width="144"/>
-        <ListBox x:Name="selectedCategoriesList" HorizontalAlignment="Left" Height="78" Margin="33,300.977,0,0" VerticalAlignment="Top" Width="144"   Grid.Row="2"/>
+        <ListBox x:Name="selectedCategoriesList" HorizontalAlignment="Left" Height="116" Margin="33,263.2,0,0" VerticalAlignment="Top" Width="144"   Grid.Row="2"/>
 
     </Grid>
 </Window>

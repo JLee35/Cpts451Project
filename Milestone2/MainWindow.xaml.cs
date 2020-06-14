@@ -22,6 +22,7 @@ namespace Milestone1
     /// </summary>
     public partial class MainWindow : Window
     {
+        private object selectedCategory = null;
 
         public class Business
         {
@@ -40,6 +41,7 @@ namespace Milestone1
             public int openStatus { get; set; }
             public int zip { get; set; }
         }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -240,9 +242,47 @@ namespace Milestone1
 
         private void CategoriesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Debug.Write("Category selection change \n");
             if (categoriesList.SelectedIndex > -1)
             {
+                selectedCategory = categoriesList.SelectedItem;
+                Debug.Write("Selected Category: " + selectedCategory.ToString() + "\n");
+            }
+        }
 
+        private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.Write("Add button click \n");
+            if ((selectedCategory != null) && (categoriesList.SelectedIndex > -1))
+            {
+                AddToCategoryList(selectedCategory);
+            }
+        }
+
+        private void RemoveCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.Write("Remove button click \n");
+            if ((selectedCategory != null) && (categoriesList.SelectedIndex > -1))
+            {
+                RemoveFromCategoryList(selectedCategory);
+            }
+        }
+
+        private void AddToCategoryList(object item)
+        {
+            if (!selectedCategoriesList.Items.Contains(item))
+            {
+                Debug.Write("Adding to category list \n");
+                selectedCategoriesList.Items.Add(item);
+            }
+        }
+
+        private void RemoveFromCategoryList(object item)
+        {
+            if (selectedCategoriesList.Items.Contains(item))
+            {
+                Debug.Write("Removing from category list \n");
+                selectedCategoriesList.Items.Remove(item);
             }
         }
     }
