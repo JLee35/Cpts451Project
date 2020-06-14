@@ -24,11 +24,11 @@ namespace Milestone1
 
         public class Business
         {
-            public string bid { get; set; }
-            public string name { get; set; }
+            public string businessID { get; set; }
+            public string businessName { get; set; }
             public string address { get; set; }
             public string city { get; set; }
-            public string state { get; set; }
+            public string businessState { get; set; }
             
             public float avgScore { get; set; }
             public float reviewRating { get; set; }
@@ -83,13 +83,13 @@ namespace Milestone1
         private void addColumns2Grid()
         {
             DataGridTextColumn col1 = new DataGridTextColumn();
-            col1.Binding = new Binding("name");
+            col1.Binding = new Binding("businessName");
             col1.Header = "BusinessName";
             col1.Width = 255;
             businessGrid.Columns.Add(col1);
 
             DataGridTextColumn col2 = new DataGridTextColumn();
-            col2.Binding = new Binding("state");
+            col2.Binding = new Binding("businessState");
             col2.Header = "State";
             col2.Width = 60;
             businessGrid.Columns.Add(col2);
@@ -101,7 +101,7 @@ namespace Milestone1
             businessGrid.Columns.Add(col3);
 
             DataGridTextColumn col4 = new DataGridTextColumn();
-            col4.Binding = new Binding("bid");
+            col4.Binding = new Binding("businessID");
             col4.Header = "";
             col4.Width = 0;
             businessGrid.Columns.Add(col4);
@@ -145,14 +145,14 @@ namespace Milestone1
             cityList.Items.Clear();
             if ( stateList.SelectedIndex > -1 )
             {
-                string sqlStr = "SELECT distinct city FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
+                string sqlStr = "SELECT distinct city FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
                 executeQuery(sqlStr, addCity);
             }
         }
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { name = R.GetString(0), state = R.GetString(1), city = R.GetString(2), bid = R.GetString(3) });
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), businessState = R.GetString(1), city = R.GetString(2), businessID = R.GetString(3) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -160,7 +160,7 @@ namespace Milestone1
             businessGrid.Items.Clear();
             if (cityList.SelectedIndex > -1)
             {
-                string sqlStr = "SELECT name, state, city, business_id FROM business WHERE state = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
+                string sqlStr = "SELECT businessName, businessState, city, businessID FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr, addGridRow);
             }
         }
@@ -170,9 +170,9 @@ namespace Milestone1
             if (businessGrid.SelectedIndex > -1)
             {
                 Business B = businessGrid.Items[businessGrid.SelectedIndex] as Business;
-                if ((B.bid != null) && (B.bid.ToString().CompareTo("") != 0))
+                if ((B.businessID != null) && (B.businessID.ToString().CompareTo("") != 0))
                 {
-                    BusinessDetails businessWindow = new BusinessDetails(B.bid.ToString());
+                    BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString());
                     businessWindow.Show();
                 }
             }
