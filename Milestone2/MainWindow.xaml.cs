@@ -146,6 +146,11 @@ namespace Milestone1
             zipList.Items.Add(R.GetInt32(0));
         }
 
+        private void addCategry(NpgsqlDataReader R)
+        {
+            categoriesList.Items.Add(R.GetString(0));
+        }
+
         private void StateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             cityList.Items.Clear();
@@ -200,10 +205,10 @@ namespace Milestone1
             if (zipList.SelectedIndex > -1)
             {
                 // Populate business categories within selected zip.
-
+                string sqlStr1 = "SELECT distinct name FROM Category, Business WHERE Business.businessID = Category.businessID AND zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
+                executeQuery(sqlStr1, addCategry);
 
                 // Populate businesses within zip in listbox.
-                // Populate businesses in city in listbox.
                 string sqlStr2 = "SELECT businessName, businessState, city, zip FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
