@@ -14,7 +14,6 @@ CREATE TABLE Business (
 	address varchar,
 	avgScore real,
 	city varchar,
-	detailedInfo char(120),
 	numCheckins int,
 	reviewCount int,
 	reviewRating real,

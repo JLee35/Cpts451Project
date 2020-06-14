@@ -3,7 +3,7 @@ import sys
 import psycopg2
 
 # TODO: Update path for input files.
-dataPath = '~/Desktop/school/cpts451/yelpdata/'
+dataPath = '/Users/admin/Desktop/school/cpts451/yelpdata/'
 
 def cleanStr4SQL(s):
 	return s.replace("'","`").replace("\n"," ")
@@ -47,11 +47,11 @@ def insert2BusinessTable():
 			data = json.loads(line)
 			businessID = cleanStr4SQL(data['business_id'])
 
-			sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, detailedInfo, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
-					  + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
-					  + str(data['stars']) + "','" + cleanStr4SQL(data['city']) + "','" + cleanStr4SQL('temp') + "','" + "0"  \
-					  + "','" + "0" + "','" + "0.0" + "','" + cleanStr4SQL(data['state']) + "','" + str(0) + "','" + str(data['is_open']) \
-					  + "','" + str(data['postal_code']) + "');"
+			sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
+                      + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
+                      + cleanStr4SQL(data['avgScore']) + "','" + cleanStr4SQL(data['city']) + "','" + str(0)  \
+                      + "','" + str(0) + "','" + str(0) + "','" + cleanStr4SQL(data['state']) + "','" + str(data['stars']) + "','" + str(data['is_open']) \
+                      + "','" + str(data['postal_code']) + "');"
 
 			try:
 				cur.execute(sql_str)
