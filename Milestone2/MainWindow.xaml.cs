@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,29 +83,36 @@ namespace Milestone1
 
         private void addColumns2Grid()
         {
-            DataGridTextColumn col1 = new DataGridTextColumn();
-            col1.Binding = new Binding("businessName");
-            col1.Header = "BusinessName";
-            col1.Width = 255;
-            businessGrid.Columns.Add(col1);
+            DataGridTextColumn nameCol = new DataGridTextColumn();
+            nameCol.Binding = new Binding("businessName");
+            nameCol.Header = "BusinessName";
+            nameCol.Width = 255;
+            businessGrid.Columns.Add(nameCol);
 
-            DataGridTextColumn col2 = new DataGridTextColumn();
-            col2.Binding = new Binding("businessState");
-            col2.Header = "State";
-            col2.Width = 60;
-            businessGrid.Columns.Add(col2);
+            DataGridTextColumn stateCol = new DataGridTextColumn();
+            stateCol.Binding = new Binding("businessState");
+            stateCol.Header = "State";
+            stateCol.Width = 60;
+            businessGrid.Columns.Add(stateCol);
 
-            DataGridTextColumn col3 = new DataGridTextColumn();
-            col3.Binding = new Binding("city");
-            col3.Header = "City";
-            col3.Width = 150;
-            businessGrid.Columns.Add(col3);
+            DataGridTextColumn cityCol = new DataGridTextColumn();
+            cityCol.Binding = new Binding("city");
+            cityCol.Header = "City";
+            cityCol.Width = 150;
+            businessGrid.Columns.Add(cityCol);
 
-            DataGridTextColumn col4 = new DataGridTextColumn();
-            col4.Binding = new Binding("businessID");
-            col4.Header = "";
-            col4.Width = 0;
-            businessGrid.Columns.Add(col4);
+            DataGridTextColumn zipCol = new DataGridTextColumn();
+            zipCol.Binding = new Binding("zip");
+            zipCol.Header = "Postal Code";
+            zipCol.Width = 60;
+            businessGrid.Columns.Add(zipCol);
+
+            //DataGridTextColumn idCol = new DataGridTextColumn();
+            //idCol.Binding = new Binding("businessID");
+            //idCol.Header = "";
+            //idCol.Width = 0;
+            //businessGrid.Columns.Add(idCol);
+            
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -152,7 +160,7 @@ namespace Milestone1
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), businessState = R.GetString(1), city = R.GetString(2), businessID = R.GetString(3) });
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), businessState = R.GetString(1), city = R.GetString(2), zip = R.GetInt32(3) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -160,7 +168,7 @@ namespace Milestone1
             businessGrid.Items.Clear();
             if (cityList.SelectedIndex > -1)
             {
-                string sqlStr = "SELECT businessName, businessState, city, businessID FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr = "SELECT businessName, businessState, city, zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr, addGridRow);
             }
         }
