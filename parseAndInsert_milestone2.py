@@ -2,7 +2,6 @@ import json
 import sys
 import psycopg2
 
-#
 # TODO: Update path for input files.
 dataPath = '~/Desktop/school/cpts451/yelpdata/'
 
@@ -283,7 +282,5 @@ insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
 insert2ReviewTable()
-#insert2CategoryTable()
-#insert2OpenTimesTable()
 #insert2UserFavoriteTable()
 insert2UserFriendTable()
