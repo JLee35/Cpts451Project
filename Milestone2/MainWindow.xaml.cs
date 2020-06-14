@@ -106,13 +106,6 @@ namespace Milestone1
             zipCol.Header = "Postal Code";
             zipCol.Width = 60;
             businessGrid.Columns.Add(zipCol);
-
-            //DataGridTextColumn idCol = new DataGridTextColumn();
-            //idCol.Binding = new Binding("businessID");
-            //idCol.Header = "";
-            //idCol.Width = 0;
-            //businessGrid.Columns.Add(idCol);
-            
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -148,6 +141,11 @@ namespace Milestone1
             cityList.Items.Add(R.GetString(0));
         }
 
+        private void addZip(NpgsqlDataReader R)
+        {
+            zipList.Items.Add(R.GetInt32(0));
+        }
+
         private void StateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             cityList.Items.Clear();
@@ -165,11 +163,18 @@ namespace Milestone1
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            zipList.Items.Clear();
             businessGrid.Items.Clear();
+            
             if (cityList.SelectedIndex > -1)
             {
-                string sqlStr = "SELECT businessName, businessState, city, zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr, addGridRow);
+                // Populate zip codes in city in zipList.
+                string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' ORDER BY zip";
+                executeQuery(sqlStr1, addZip);
+
+                // Populate businesses in city in listbox.
+                string sqlStr2 = "SELECT businessName, businessState, city, zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                executeQuery(sqlStr2, addGridRow);
             }
         }
 
@@ -183,6 +188,15 @@ namespace Milestone1
                     BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString());
                     businessWindow.Show();
                 }
+            }
+        }
+
+        private void ZipList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            businessGrid.Items.Clear();
+            if (zipList.SelectedIndex > -1)
+            {
+                
             }
         }
     }

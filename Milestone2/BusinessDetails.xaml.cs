@@ -67,6 +67,7 @@ namespace Milestone1
             bname.Text = R.GetString(0);
             state.Text = R.GetString(1);
             city.Text = R.GetString(2);
+            
         }
 
         void setNumInState(NpgsqlDataReader R)
