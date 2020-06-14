@@ -2,6 +2,7 @@ import json
 import sys
 import psycopg2
 
+#
 # TODO: Update path for input files.
 # '~/Desktop/school/cpts451/yelpdata/'
 dataPath = ''
