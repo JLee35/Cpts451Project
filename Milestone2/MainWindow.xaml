@@ -5,15 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Milestone1"
         mc:Ignorable="d"
-        Title="Yelp App" Height="528.647" Width="700">
+        Title="Yelp App" Height="669.68" Width="700">
     <Grid>
         <Label x:Name="stateLabel" Content="State" HorizontalAlignment="Left" FontSize="14" Margin="90,44,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.562,-1.43"/>
         <Label x:Name="cityLabel" Content="City" HorizontalAlignment="Left" FontSize="14" Margin="90,97,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.878,-1.336"/>
         <ComboBox x:Name="stateList" HorizontalAlignment="Left" Margin="199,44,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="0.387,-0.098" SelectionChanged="StateList_SelectionChanged"/>
         <ComboBox x:Name="cityList" HorizontalAlignment="Left" Margin="199,100,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="-0.28,-0.92" SelectionChanged="CityList_SelectionChanged"/>
-        <DataGrid x:Name="businessGrid" Height="282" Margin="61,207,61.6,0" VerticalAlignment="Top" RenderTransformOrigin="0.497,0.545" SelectionChanged="BusinessGrid_SelectionChanged"/>
+        <DataGrid x:Name="businessGrid" Height="282" Margin="61,289,61.6,0" VerticalAlignment="Top" RenderTransformOrigin="0.497,0.545" SelectionChanged="BusinessGrid_SelectionChanged"/>
         <Label x:Name="zipLabel" Content="Zip" HorizontalAlignment="Left" FontSize="14" Margin="90,158,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.878,-1.336"/>
         <ComboBox x:Name="zipList" HorizontalAlignment="Left" Margin="199,158,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="-0.28,-0.92" SelectionChanged="ZipList_SelectionChanged"/>
+        <Label x:Name="categoriesLabel" Content="Categories" HorizontalAlignment="Left" FontSize="14" Margin="93,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.878,-1.336"/>
+        <ComboBox x:Name="categoriesList" HorizontalAlignment="Left" Margin="199,220,0,0" VerticalAlignment="Top" Width="270" RenderTransformOrigin="-0.28,-0.92" SelectionChanged="CategoriesList_SelectionChanged"/>
 
     </Grid>
 </Window>

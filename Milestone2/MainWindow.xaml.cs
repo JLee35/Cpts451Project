@@ -169,7 +169,7 @@ namespace Milestone1
             if (cityList.SelectedIndex > -1)
             {
                 // Populate zip codes in city in zipList.
-                string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' ORDER BY zip";
+                string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY zip";
                 executeQuery(sqlStr1, addZip);
 
                 // Populate businesses in city in listbox.
@@ -178,6 +178,7 @@ namespace Milestone1
             }
         }
 
+        // Toggle BusinessDetails window when business item is selected from listbox.
         private void BusinessGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (businessGrid.SelectedIndex > -1)
@@ -193,10 +194,27 @@ namespace Milestone1
 
         private void ZipList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            categoriesList.Items.Clear();
             businessGrid.Items.Clear();
+
             if (zipList.SelectedIndex > -1)
             {
-                
+                // Populate business categories within selected zip.
+
+
+                // Populate businesses within zip in listbox.
+                // Populate businesses in city in listbox.
+                string sqlStr2 = "SELECT businessName, businessState, city, zip FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                executeQuery(sqlStr2, addGridRow);
+            }
+        }
+
+        private void CategoriesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            businessGrid.Items.Clear();
+            if (categoriesList.SelectedIndex > -1)
+            {
+
             }
         }
     }
