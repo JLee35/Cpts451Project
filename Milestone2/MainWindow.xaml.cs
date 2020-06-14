@@ -25,12 +25,19 @@ namespace Milestone1
         public class Business
         {
             public string bid { get; set; }
-
             public string name { get; set; }
-
-            public string state { get; set; }
-
+            public string address { get; set; }
             public string city { get; set; }
+            public string state { get; set; }
+            
+            public float avgScore { get; set; }
+            public float reviewRating { get; set; }
+            public float stars { get; set; }
+
+            public int numCheckins { get; set; }
+            public int reviewCount { get; set; }
+            public int openStatus { get; set; }
+            public int zip { get; set; }
         }
         public MainWindow()
         {
@@ -41,7 +48,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milestone1db; password=kuljack2";
+            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
         private void addStates()
@@ -52,7 +59,7 @@ namespace Milestone1
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "SELECT distinct state FROM business ORDER BY state";
+                    cmd.CommandText = "SELECT distinct businessState FROM Business ORDER BY businessState";
 
                     try
                     {

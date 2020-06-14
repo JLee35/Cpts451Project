@@ -3,7 +3,7 @@ import sys
 import psycopg2
 
 # TODO: Update path for input files.
-dataPath = '/Users/admin/Desktop/school/cpts451/yelpdata/'
+dataPath = 'C:/Users/Admin/Desktop/School/CptS451/'
 
 def cleanStr4SQL(s):
 	return s.replace("'","`").replace("\n"," ")
