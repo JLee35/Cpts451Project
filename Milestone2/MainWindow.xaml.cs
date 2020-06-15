@@ -22,7 +22,8 @@ namespace Milestone1
     /// </summary>
     public partial class MainWindow : Window
     {
-        private object selectedCategory = null;
+        private object selectedCategoryToAdd = null;
+        private object selectedCategoryToRemove = null;
 
         public class Business
         {
@@ -242,29 +243,25 @@ namespace Milestone1
 
         private void CategoriesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Debug.Write("Category selection change \n");
-            if (categoriesList.SelectedIndex > -1)
+            if ((categoriesList.SelectedItem != null) && (categoriesList.SelectedIndex > -1))
             {
-                selectedCategory = categoriesList.SelectedItem;
-                Debug.Write("Selected Category: " + selectedCategory.ToString() + "\n");
+                selectedCategoryToAdd = categoriesList.SelectedItem;
             }
         }
-
+        
         private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            Debug.Write("Add button click \n");
-            if ((selectedCategory != null) && (categoriesList.SelectedIndex > -1))
+            if ((selectedCategoryToAdd != null) && (categoriesList.SelectedIndex > -1))
             {
-                AddToCategoryList(selectedCategory);
+                AddToCategoryList(selectedCategoryToAdd);
             }
         }
 
         private void RemoveCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            Debug.Write("Remove button click \n");
-            if ((selectedCategory != null) && (categoriesList.SelectedIndex > -1))
+            if ((selectedCategoryToRemove != null) && (selectedCategoriesList.SelectedIndex > -1))
             {
-                RemoveFromCategoryList(selectedCategory);
+                RemoveFromCategoryList(selectedCategoryToRemove);
             }
         }
 
@@ -272,7 +269,6 @@ namespace Milestone1
         {
             if (!selectedCategoriesList.Items.Contains(item))
             {
-                Debug.Write("Adding to category list \n");
                 selectedCategoriesList.Items.Add(item);
             }
         }
@@ -281,8 +277,68 @@ namespace Milestone1
         {
             if (selectedCategoriesList.Items.Contains(item))
             {
-                Debug.Write("Removing from category list \n");
                 selectedCategoriesList.Items.Remove(item);
+            }
+        }
+
+        private void SearchBusinessButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If categories are selected then add them into the query.
+            if (selectedCategoriesList.Items.Count > 0)
+            {
+                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business, Category WHERE zip = '" +
+                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = Category.businessID AND ";
+
+                sqlStr += GetCategoryItems();
+
+                sqlStr += " ORDER BY businessName;";
+
+                // Empty existing ListBox.
+                businessGrid.Items.Clear();
+                executeQuery(sqlStr, addGridRow);
+            }
+            
+            else
+            {
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                executeQuery(sqlStr2, addGridRow);
+            }
+            
+        }
+
+        private string GetCategoryItems()
+        {
+            string sqlStr = "";
+
+            for (int x = 0; x < selectedCategoriesList.Items.Count; x++)
+            {
+                if (x == 0)
+                {
+                    sqlStr = "Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                }
+
+                else
+                {
+                    if ((x+1) == selectedCategoriesList.Items.Count)
+                    {
+                        sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                    }
+
+                    else
+                    {
+                        sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                    }
+                }
+            }
+
+            return sqlStr;
+        }
+
+        private void SelectedCategoriesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((selectedCategoriesList.SelectedItem != null) && (selectedCategoriesList.SelectedIndex > -1))
+            {
+                selectedCategoryToRemove = selectedCategoriesList.SelectedItem;
             }
         }
     }
