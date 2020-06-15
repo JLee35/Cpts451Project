@@ -79,8 +79,8 @@ namespace Milestone1
                     try
                     {
                         var reader = cmd.ExecuteReader();
-                        reader.Read();
-                        myf(reader);
+                        while (reader.Read())
+                            myf(reader);
                     }
                     catch (NpgsqlException ex)
                     {
@@ -100,7 +100,6 @@ namespace Milestone1
             bname.Text = R.GetString(0);
             state.Text = R.GetString(1);
             city.Text = R.GetString(2);
-            
         }
 
         void setNumInState(NpgsqlDataReader R)
@@ -117,9 +116,9 @@ namespace Milestone1
         {
             string sqlStr1 = "SELECT count(*) FROM Business WHERE businessState = (SELECT businessState FROM Business WHERE businessID = '" + this.businessID + "');";
             executeQuery(sqlStr1, setNumInState);
+
             string sqlStr2 = "SELECT count(*) FROM Business WHERE city = (SELECT city FROM Business WHERE businessID = '" + this.businessID + "');";
             executeQuery(sqlStr2, setNumInCity);
-              
         }
 
         private void loadBusinessDetails()
@@ -140,6 +139,4 @@ namespace Milestone1
             reviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), stars = R.GetFloat(1), content = R.GetString(2) });
         }
     }
-
-    
 }
