@@ -25,8 +25,46 @@ namespace Milestone1
         {
             InitializeComponent();
             this.businessID = String.Copy(businessID);
+            addColumns2Grid();
             loadBusinessDetails();
             loadBusinessNumbers();
+        }
+
+        public class Review
+        {
+            public string reviewID { get; set; }
+            public string userID { get; set; }
+            public string userName { get; set; }
+            public string businessID { get; set; }
+            public string stars { get; set; }
+            public string content { get; set; }
+        }
+
+        private void addColumns2Grid()
+        {
+            DataGridTextColumn dateCol = new DataGridTextColumn();
+            dateCol.Binding = new Binding("businessName");
+            dateCol.Header = "BusinessName";
+            dateCol.Width = 155;
+            reviewDataGrid.Columns.Add(dateCol);
+
+            DataGridTextColumn userIDCol = new DataGridTextColumn();
+            userIDCol.Binding = new Binding("userName");
+            userIDCol.Header = "User Name";
+            userIDCol.Width = 75;
+            reviewDataGrid.Columns.Add(userIDCol);
+
+            DataGridTextColumn starsCol = new DataGridTextColumn();
+            starsCol.Binding = new Binding("stars");
+            starsCol.Header = "Stars";
+            starsCol.Width = 75;
+            reviewDataGrid.Columns.Add(starsCol);
+
+            DataGridTextColumn contentCol = new DataGridTextColumn();
+            contentCol.Binding = new Binding("content");
+            contentCol.Header = "Text";
+            contentCol.Width = 350;
+            reviewDataGrid.Columns.Add(contentCol);
         }
 
         private string buildConnectionString()
