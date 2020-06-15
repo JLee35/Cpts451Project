@@ -52,7 +52,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
+            return "Host = localhost; Username = postgres; Database = milestone2DB; password=kuljack2";
         }
 
         private void addStates()
@@ -190,7 +190,7 @@ namespace Milestone1
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7) });
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8) });
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -205,7 +205,7 @@ namespace Milestone1
                 executeQuery(sqlStr1, addZip);
 
                 // Populate businesses in city in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
         }
@@ -236,7 +236,7 @@ namespace Milestone1
                 executeQuery(sqlStr1, addCategory);
 
                 // Populate businesses within zip in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
         }
@@ -286,7 +286,7 @@ namespace Milestone1
             // If categories are selected then add them into the query.
             if (selectedCategoriesList.Items.Count > 0)
             {
-                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business, Category WHERE zip = '" +
+                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business, Category WHERE zip = '" +
                     zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = Category.businessID AND ";
 
                 sqlStr += GetCategoryItems();
@@ -300,7 +300,7 @@ namespace Milestone1
             
             else
             {
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
                 executeQuery(sqlStr2, addGridRow);
             }
             
