@@ -52,7 +52,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milestone2DB; password=kuljack2";
+            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
         private void addStates()
@@ -133,6 +133,13 @@ namespace Milestone1
             numCheckinsCol.Header = "# Checkins";
             numCheckinsCol.Width = 85;
             businessGrid.Columns.Add(numCheckinsCol);
+
+            DataGridTextColumn businessIDCol = new DataGridTextColumn();
+            businessIDCol.Binding = new Binding("businessID");
+            businessIDCol.Header = "businessID";
+            businessIDCol.Width = 85;
+            businessGrid.Columns.Add(businessIDCol);
+
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -190,7 +197,7 @@ namespace Milestone1
 
         private void addGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8) });
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8)});
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -286,17 +293,10 @@ namespace Milestone1
             // If categories are selected then add them into the query.
             if (selectedCategoriesList.Items.Count > 0)
             {
-<<<<<<< HEAD
-                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business, " + 
+                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID FROM Business, " + 
                     GetCategoryItems() + " WHERE zip = '" +
                     zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = filteredCategories.query0ID";
-=======
-                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business, Category WHERE zip = '" +
-                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = Category.businessID AND ";
->>>>>>> 294a1eada199495008a0720abf17158651e94b32
-
-                //sqlStr += GetCategoryItems();
-
+                
                 sqlStr += " ORDER BY businessName;";
 
                 // Empty existing ListBox.
@@ -320,7 +320,6 @@ namespace Milestone1
             {
                 if (x == 0)
                 {
-                    //sqlStr = "Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
                     sqlStr += "SELECT query0ID FROM (SELECT businessID as query0ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query0 ";
                 }
 
@@ -328,14 +327,12 @@ namespace Milestone1
                 {
                     if ((x+1) == selectedCategoriesList.Items.Count)
                     {
-                        //sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
                         sqlStr += "INNER JOIN (SELECT businessID as query" + x.ToString() + "ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query" +
                             x.ToString() + " ON query0.query0ID = query" + x.ToString() + ".query" + x.ToString() + "ID ";
                     }
 
                     else
                     {
-                        //sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
                         sqlStr += "INNER JOIN (SELECT businessID as query" + x.ToString() + "ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query" +
                             x.ToString() + " ON query0.query0ID = query" + x.ToString() + ".query" + x.ToString() + "ID ";
                     }
