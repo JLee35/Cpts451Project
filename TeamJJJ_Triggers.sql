@@ -28,16 +28,16 @@ WHEN (new.businessid IS NOT NULL)
 EXECUTE PROCEDURE UpdateReviewRating();
 
 CREATE OR REPLACE FUNCTION Updatecheckins() RETURNS trigger AS '
-BEGIN
+BEGIN 
 	UPDATE business
-	SET  numcheckins = numcheckins + 1
-	WHERE business.businessid = new.checkinbusinessid;
-	RETURN new;
+	SET  numcheckins = numcheckins - (SELECT checkInAmount FROM CheckIn WHERE checkInBusinessID = NEW.checkInBusinessID AND checkInDay = NEW.checkInDay AND checkInTime = NEW.checkInTime)
+	                               + NEW.checkInAmount;
+   RETURN NEW;
 END
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER CheckinsInc
-AFTER INSERT ON checkin
+CREATE TRIGGER Checkins
+BEFORE INSERT OR UPDATE ON checkin
 FOR EACH ROW
 WHEN (new.checkinbusinessid IS NOT NULL)
 EXECUTE PROCEDURE Updatecheckins();
@@ -46,13 +46,20 @@ EXECUTE PROCEDURE Updatecheckins();
 
 --Increases review count and increases review rating
 INSERT INTO review(reviewid, userid, businessid, stars, content)
-VALUES ('Ivjq9nkAt3_zuOwF94JwCD', 'ZkWIhSrKC2NA8aj0s4_8ew', 'Jy40ercZIQaNcz2qV3qgow', 5, 'Great Food!')
+VALUES ('Ivjq9nkAt3_zuOwF94JwCD', 'ZkWIhSrKC2NA8aj0s4_8ew', 'Jy40ercZIQaNcz2qV3qgow', 5, 'Great Food!');
 
 --Update previously entered review to reduce review rating.
 UPDATE review
-SET stars = 1
-WHERE business_id = 'Jy40ercZIQaNcz2qV3qgow' AND  user_id = 'ZkWIhSrKC2NA8aj0s4_8ew' AND reviewid = 'Ivjq9nkAt3_zuOwF94JwCD';
+SET stars = 3
+WHERE businessID = 'Jy40ercZIQaNcz2qV3qgow' AND  userID = 'ZkWIhSrKC2NA8aj0s4_8ew' AND reviewID = 'Ivjq9nkAt3_zuOwF94JwCD';
 
 --Insert into checkin to increase checkin count
 INSERT INTO checkin(checkinday, checkintime, checkinamount, checkinbusinessid)
-VALUES ('Friday', '21:30:00', 2, 'Jy40ercZIQaNcz2qV3qgow')
+VALUES ('Thursday', '22:30:00', 3, '-2X9U7v-Avoib-ki0y85bA');
+
+UPDATE CheckIn
+SET checkInAmount = 2
+WHERE checkInBusinessID = '-2X9U7v-Avoib-ki0y85bA' AND checkInDay = 'Thursday' AND checkInTime = '22:30:00';
+
+SELECT * FROM CheckIn WHERE checkInBusinessID = '-2X9U7v-Avoib-ki0y85bA';
+SELECT numcheckins FROM Business WHERE BusinessID = '-2X9U7v-Avoib-ki0y85bA';
