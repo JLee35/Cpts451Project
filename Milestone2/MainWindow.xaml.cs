@@ -286,10 +286,11 @@ namespace Milestone1
             // If categories are selected then add them into the query.
             if (selectedCategoriesList.Items.Count > 0)
             {
-                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business, Category WHERE zip = '" +
-                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = Category.businessID AND ";
+                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins FROM Business, " + 
+                    GetCategoryItems() + " WHERE zip = '" +
+                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = filteredCategories.query0ID";
 
-                sqlStr += GetCategoryItems();
+                //sqlStr += GetCategoryItems();
 
                 sqlStr += " ORDER BY businessName;";
 
@@ -308,29 +309,34 @@ namespace Milestone1
 
         private string GetCategoryItems()
         {
-            string sqlStr = "";
+            string sqlStr = "(";
 
             for (int x = 0; x < selectedCategoriesList.Items.Count; x++)
             {
                 if (x == 0)
                 {
-                    sqlStr = "Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                    //sqlStr = "Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                    sqlStr += "SELECT query0ID FROM (SELECT businessID as query0ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query0 ";
                 }
 
                 else
                 {
                     if ((x+1) == selectedCategoriesList.Items.Count)
                     {
-                        sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                        //sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                        sqlStr += "INNER JOIN (SELECT businessID as query" + x.ToString() + "ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query" +
+                            x.ToString() + " ON query0.query0ID = query" + x.ToString() + ".query" + x.ToString() + "ID ";
                     }
 
                     else
                     {
-                        sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                        //sqlStr += " AND Category.name = '" + selectedCategoriesList.Items[x].ToString() + "'";
+                        sqlStr += "INNER JOIN (SELECT businessID as query" + x.ToString() + "ID FROM Category WHERE name = '" + selectedCategoriesList.Items[x].ToString() + "') as query" +
+                            x.ToString() + " ON query0.query0ID = query" + x.ToString() + ".query" + x.ToString() + "ID ";
                     }
                 }
             }
-
+            sqlStr += ") as filteredCategories";
             return sqlStr;
         }
 
