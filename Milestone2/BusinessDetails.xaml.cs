@@ -28,6 +28,7 @@ namespace Milestone1
             addColumns2Grid();
             loadBusinessDetails();
             loadBusinessNumbers();
+            loadReviews();
         }
 
         public class Review
@@ -36,18 +37,12 @@ namespace Milestone1
             public string userID { get; set; }
             public string userName { get; set; }
             public string businessID { get; set; }
-            public string stars { get; set; }
+            public float stars { get; set; }
             public string content { get; set; }
         }
 
         private void addColumns2Grid()
         {
-            DataGridTextColumn dateCol = new DataGridTextColumn();
-            dateCol.Binding = new Binding("businessName");
-            dateCol.Header = "BusinessName";
-            dateCol.Width = 155;
-            reviewDataGrid.Columns.Add(dateCol);
-
             DataGridTextColumn userIDCol = new DataGridTextColumn();
             userIDCol.Binding = new Binding("userName");
             userIDCol.Header = "User Name";
@@ -63,7 +58,7 @@ namespace Milestone1
             DataGridTextColumn contentCol = new DataGridTextColumn();
             contentCol.Binding = new Binding("content");
             contentCol.Header = "Text";
-            contentCol.Width = 350;
+            contentCol.Width = 500;
             reviewDataGrid.Columns.Add(contentCol);
         }
 
@@ -72,7 +67,7 @@ namespace Milestone1
             return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
-        private void excecuteQuery(string sqlstr, Action<NpgsqlDataReader> myf)
+        private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
         {
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -121,16 +116,28 @@ namespace Milestone1
         private void loadBusinessNumbers ()
         {
             string sqlStr1 = "SELECT count(*) FROM Business WHERE businessState = (SELECT businessState FROM Business WHERE businessID = '" + this.businessID + "');";
-            excecuteQuery(sqlStr1, setNumInState);
+            executeQuery(sqlStr1, setNumInState);
             string sqlStr2 = "SELECT count(*) FROM Business WHERE city = (SELECT city FROM Business WHERE businessID = '" + this.businessID + "');";
-            excecuteQuery(sqlStr2, setNumInCity);
+            executeQuery(sqlStr2, setNumInCity);
               
         }
 
         private void loadBusinessDetails()
         {
             string sqlStr = "SELECT businessName, businessState, city FROM Business WHERE businessID = '" + this.businessID + "';";
-            excecuteQuery(sqlStr, setBusinessDetails);
+            executeQuery(sqlStr, setBusinessDetails);
+        }
+
+        private void loadReviews()
+        {
+            string sqlStr = "SELECT name, Review.stars, content FROM UserTable, Review, Business WHERE Business.businessID = '" + this.businessID + "' AND Review.businessID = '" + this.businessID +
+                "' AND UserTable.userID = Review.userID;";
+            executeQuery(sqlStr, addGridRow);
+        }
+
+        private void addGridRow(NpgsqlDataReader R)
+        {
+            reviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), stars = R.GetFloat(1), content = R.GetString(2) });
         }
     }
 
