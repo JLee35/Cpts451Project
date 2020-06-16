@@ -30,7 +30,7 @@ EXECUTE PROCEDURE UpdateReviewRating();
 CREATE OR REPLACE FUNCTION Updatecheckins() RETURNS trigger AS '
 BEGIN 
 	UPDATE business
-	SET  numcheckins = numcheckins - (SELECT checkInAmount FROM CheckIn WHERE checkInBusinessID = NEW.checkInBusinessID AND checkInDay = NEW.checkInDay AND checkInTime = NEW.checkInTime)
+	SET  numcheckins = (SELECT SUM(checkinamount) FROM Checkin WHERE checkinbusinessid =  NEW.checkinbusinessid ) numcheckins - (SELECT checkInAmount FROM CheckIn WHERE checkInBusinessID = NEW.checkInBusinessID AND checkInDay = NEW.checkInDay AND checkInTime = NEW.checkInTime)
 	                               + NEW.checkInAmount;
    RETURN NEW;
 END
