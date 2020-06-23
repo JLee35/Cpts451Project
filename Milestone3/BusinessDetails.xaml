@@ -7,18 +7,16 @@
         mc:Ignorable="d"
         Title="BusinessDetails" Height="450" Width="912.831">
     <Grid>
-        <Label x:Name="label" Content="Business Name" HorizontalAlignment="Left" Margin="35,19,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label1" Content="State" HorizontalAlignment="Left" Margin="35,61,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2" Content="City" HorizontalAlignment="Left" Margin="35,104,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="nameLabel" Content="Business Name" HorizontalAlignment="Left" Margin="35,19,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="stateLabel" Content="State" HorizontalAlignment="Left" Margin="35,136,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="cityLabel" Content="City" HorizontalAlignment="Left" Margin="35,94,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="bname" HorizontalAlignment="Left" Height="23" Margin="215,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
-        <TextBox x:Name="state" HorizontalAlignment="Left" Height="23" Margin="215,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
-        <TextBox x:Name="city" HorizontalAlignment="Left" Height="23" Margin="215,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
-        <Label x:Name="label_Copy" Content="Number of businesses in the same city:" HorizontalAlignment="Left" Margin="35,144,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="numInCity" Content="____________" HorizontalAlignment="Left" Margin="336,144,0,0" VerticalAlignment="Top" Width="46"/>
-        <Label x:Name="label_Copy2" Content="Number of businesses in the same state:" HorizontalAlignment="Left" Margin="35,175,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="numInState" Content="____________" HorizontalAlignment="Left" Margin="336,175,0,0" VerticalAlignment="Top" Width="46"/>
+        <TextBox x:Name="state" HorizontalAlignment="Left" Height="23" Margin="215,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
+        <TextBox x:Name="city" HorizontalAlignment="Left" Height="23" Margin="215,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
         <DataGrid x:Name="reviewDataGrid" HorizontalAlignment="Left" Height="162" Margin="44,235,0,0" VerticalAlignment="Top" Width="819"/>
-        <Label x:Name="label3" Content="Reviews&#xD;&#xA;" HorizontalAlignment="Left" Height="29" Margin="35,206,0,0" VerticalAlignment="Top" Width="95"/>
+        <Label x:Name="reviewLabel" Content="Reviews&#xD;&#xA;" HorizontalAlignment="Left" Height="29" Margin="35,206,0,0" VerticalAlignment="Top" Width="95"/>
+        <Label x:Name="addressLabel" Content="Address" HorizontalAlignment="Left" Margin="35,55,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="address" HorizontalAlignment="Left" Height="23" Margin="215,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
 
     </Grid>
 </Window>

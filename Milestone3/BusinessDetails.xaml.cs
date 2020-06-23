@@ -27,7 +27,6 @@ namespace Milestone1
             this.businessID = String.Copy(businessID);
             addColumns2Grid();
             loadBusinessDetails();
-            loadBusinessNumbers();
             loadReviews();
         }
 
@@ -58,7 +57,7 @@ namespace Milestone1
             DataGridTextColumn contentCol = new DataGridTextColumn();
             contentCol.Binding = new Binding("content");
             contentCol.Header = "Text";
-            contentCol.Width = 500;
+            contentCol.Width = 800;
             reviewDataGrid.Columns.Add(contentCol);
         }
 
@@ -98,32 +97,14 @@ namespace Milestone1
         private void setBusinessDetails(NpgsqlDataReader R)
         {
             bname.Text = R.GetString(0);
-            state.Text = R.GetString(1);
+            address.Text = R.GetString(1);
             city.Text = R.GetString(2);
+            state.Text = R.GetString(3);
         }
-
-        void setNumInState(NpgsqlDataReader R)
-        {
-            numInState.Content = R.GetInt16(0).ToString();
-        }
-
-        void setNumInCity(NpgsqlDataReader R)
-        {
-            numInCity.Content = R.GetInt16(0).ToString();
-        }
-
-        private void loadBusinessNumbers ()
-        {
-            string sqlStr1 = "SELECT count(*) FROM Business WHERE businessState = (SELECT businessState FROM Business WHERE businessID = '" + this.businessID + "');";
-            executeQuery(sqlStr1, setNumInState);
-
-            string sqlStr2 = "SELECT count(*) FROM Business WHERE city = (SELECT city FROM Business WHERE businessID = '" + this.businessID + "');";
-            executeQuery(sqlStr2, setNumInCity);
-        }
-
+        
         private void loadBusinessDetails()
         {
-            string sqlStr = "SELECT businessName, businessState, city FROM Business WHERE businessID = '" + this.businessID + "';";
+            string sqlStr = "SELECT businessName, address, city, businessState FROM Business WHERE businessID = '" + this.businessID + "';";
             executeQuery(sqlStr, setBusinessDetails);
         }
 

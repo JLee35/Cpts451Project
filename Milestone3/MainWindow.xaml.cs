@@ -349,5 +349,10 @@ namespace Milestone1
                 selectedCategoryToRemove = selectedCategoriesList.SelectedItem;
             }
         }
+
+        private void SortResultsByList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Debug.WriteLine("TODO: Add SortResultsByList_SelectionChanged code.");
+        }
     }
 }
