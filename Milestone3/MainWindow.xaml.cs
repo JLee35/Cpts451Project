@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Npgsql;
 
 namespace Milestone1
@@ -64,8 +54,12 @@ namespace Milestone1
         {
             InitializeComponent();
             addStates();
+
+            // Add data grids.
             addColumns2BusinessGrid();
             addColumns2UserFavoriteBusinessesDataGrid();
+            addColumns2UserFriendsDataGrid();
+
             addSortResultOptions();
         }
 
@@ -204,6 +198,27 @@ namespace Milestone1
             addressCol.Header = "Address";
             addressCol.Width = 300;
             userFavoriteBusinessesDataGrid.Columns.Add(addressCol);
+        }
+
+        private void addColumns2UserFriendsDataGrid()
+        {
+            DataGridTextColumn nameCol = new DataGridTextColumn();
+            nameCol.Binding = new Binding("name");
+            nameCol.Header = "Name";
+            nameCol.Width = 100;
+            userFriendsDataGrid.Columns.Add(nameCol);
+
+            DataGridTextColumn starsCol = new DataGridTextColumn();
+            starsCol.Binding = new Binding("avgStars");
+            starsCol.Header = "Avg Stars";
+            starsCol.Width = 75;
+            userFriendsDataGrid.Columns.Add(starsCol);
+
+            DataGridTextColumn yelpingSinceCol = new DataGridTextColumn();
+            yelpingSinceCol.Binding = new Binding("yelpingSince");
+            yelpingSinceCol.Header = "Yelping Since";
+            yelpingSinceCol.Width = 150;
+            userFriendsDataGrid.Columns.Add(yelpingSinceCol);
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -460,6 +475,10 @@ namespace Milestone1
             string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
                 "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
             executeQuery(sqlStr2, AddCurrentUserFavoriteBusinesses);
+
+            // Update friends list
+            string sqlStr3 = "SELECT name, avgStars, yelpingSince FROM UserTable, UserFriend WHERE UserFriend.friendUserID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
+            executeQuery(sqlStr3, addCurrentUserFriends);
         }
 
         private void ClearCurrentUserInfoFields()
@@ -485,9 +504,14 @@ namespace Milestone1
             userFansTextBlock.Text = R.GetInt32(5).ToString();
         }
 
-        public void AddCurrentUserFavoriteBusinesses(NpgsqlDataReader R)
+        private void AddCurrentUserFavoriteBusinesses(NpgsqlDataReader R)
         {
             userFavoriteBusinessesDataGrid.Items.Add(new Business() { businessName = R.GetString(0), stars = R.GetFloat(1), city = R.GetString(2), zip = R.GetInt32(3), address = R.GetString(4) });
+        }
+
+        private void addCurrentUserFriends(NpgsqlDataReader R)
+        {
+            userFriendsDataGrid.Items.Add(new User() { name = R.GetString(0), avgStars = R.GetFloat(1), yelpingSince = R.GetDateTime(2) });
         }
     }
 }
