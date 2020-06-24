@@ -17,8 +17,10 @@
         <Label x:Name="reviewLabel" Content="Reviews&#xD;&#xA;" HorizontalAlignment="Left" Height="29" Margin="44,206,0,0" VerticalAlignment="Top" Width="95"/>
         <Label x:Name="addressLabel" Content="Address" HorizontalAlignment="Left" Margin="44,55,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="address" HorizontalAlignment="Left" Height="23" Margin="215,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
-        <DataGrid x:Name="openTimesDataGrid" HorizontalAlignment="Left" Height="107" Margin="537,55,0,0" VerticalAlignment="Top" Width="326"/>
+        <DataGrid x:Name="openTimesDataGrid" HorizontalAlignment="Left" Height="146" Margin="537,55,0,0" VerticalAlignment="Top" Width="326"/>
         <Label x:Name="openTimesLabel" Content="Schedule" HorizontalAlignment="Left" Margin="537,18,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="statusLabel" Content="Status" HorizontalAlignment="Left" Margin="44,175,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="status" HorizontalAlignment="Left" Height="23" Margin="215,178,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
 
     </Grid>
 </Window>

@@ -29,6 +29,7 @@ namespace Milestone1
             addColumns2OpenTimesGrid();
             loadBusinessDetails();
             loadReviews();
+            loadOpenTimes();
         }
 
         public class Review
@@ -44,8 +45,8 @@ namespace Milestone1
         public class OpenTimes
         {
             public string day { get; set; }
-            public string openTime { get; set; }
-            public string closeTime { get; set; }
+            public TimeSpan openTime { get; set; }
+            public TimeSpan closeTime { get; set; }
         }
 
         private void addColumns2ReviewGrid()
@@ -129,17 +130,28 @@ namespace Milestone1
             address.Text = R.GetString(1);
             city.Text = R.GetString(2);
             state.Text = R.GetString(3);
+            
+            if (R.GetInt16(4) == 0)
+            {
+                status.Text = "Closed";
+            }
+
+            else
+            {
+                status.Text = "Open";
+            }
+            
         }
         
         private void loadBusinessDetails()
         {
-            string sqlStr = "SELECT businessName, address, city, businessState FROM Business WHERE businessID = '" + this.businessID + "';";
+            string sqlStr = "SELECT businessName, address, city, businessState, openStatus FROM Business WHERE businessID = '" + this.businessID + "';";
             executeQuery(sqlStr, setBusinessDetails);
         }
 
         private void loadOpenTimes()
         {
-            string sqlStr = "SELECT day, openTime, closeTime FROM Business, OpenTimes WHERE Business.businessID = '" + this.businessID + "' AND OpenTimes.businessID = '" + this.businessID + "';";
+            string sqlStr = "SELECT day, openTime, closeTime FROM OpenTimes WHERE OpenTimes.businessID = '" + this.businessID + "';";
             executeQuery(sqlStr, addOpenTimesGridRow);
         }
 
@@ -157,7 +169,7 @@ namespace Milestone1
 
         private void addOpenTimesGridRow(NpgsqlDataReader R)
         {
-            openTimesDataGrid.Items.Add(new OpenTimes() { day = R.GetString(0), openTime = R.GetString(1), closeTime = R.GetString(2) });
+            openTimesDataGrid.Items.Add(new OpenTimes() { day = R.GetString(0), openTime = R.GetTimeSpan(1), closeTime = R.GetTimeSpan(2) });
         }
     }
 }
