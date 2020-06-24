@@ -25,7 +25,8 @@ namespace Milestone1
         {
             InitializeComponent();
             this.businessID = String.Copy(businessID);
-            addColumns2Grid();
+            addColumns2ReviewGrid();
+            addColumns2OpenTimesGrid();
             loadBusinessDetails();
             loadReviews();
         }
@@ -40,7 +41,14 @@ namespace Milestone1
             public string content { get; set; }
         }
 
-        private void addColumns2Grid()
+        public class OpenTimes
+        {
+            public string day { get; set; }
+            public string openTime { get; set; }
+            public string closeTime { get; set; }
+        }
+
+        private void addColumns2ReviewGrid()
         {
             DataGridTextColumn userIDCol = new DataGridTextColumn();
             userIDCol.Binding = new Binding("userName");
@@ -59,6 +67,27 @@ namespace Milestone1
             contentCol.Header = "Text";
             contentCol.Width = 800;
             reviewDataGrid.Columns.Add(contentCol);
+        }
+
+        private void addColumns2OpenTimesGrid()
+        {
+            DataGridTextColumn dayCol = new DataGridTextColumn();
+            dayCol.Binding = new Binding("day");
+            dayCol.Header = "Day";
+            dayCol.Width = 120;
+            openTimesDataGrid.Columns.Add(dayCol);
+
+            DataGridTextColumn openTimeCol = new DataGridTextColumn();
+            openTimeCol.Binding = new Binding("openTime");
+            openTimeCol.Header = "Opens at";
+            openTimeCol.Width = 120;
+            openTimesDataGrid.Columns.Add(openTimeCol);
+
+            DataGridTextColumn closeTimeCol = new DataGridTextColumn();
+            closeTimeCol.Binding = new Binding("closeTime");
+            closeTimeCol.Header = "Closes at";
+            closeTimeCol.Width = 120;
+            openTimesDataGrid.Columns.Add(closeTimeCol);
         }
 
         private string buildConnectionString()
@@ -108,16 +137,27 @@ namespace Milestone1
             executeQuery(sqlStr, setBusinessDetails);
         }
 
+        private void loadOpenTimes()
+        {
+            string sqlStr = "SELECT day, openTime, closeTime FROM Business, OpenTimes WHERE Business.businessID = '" + this.businessID + "' AND OpenTimes.businessID = '" + this.businessID + "';";
+            executeQuery(sqlStr, addOpenTimesGridRow);
+        }
+
         private void loadReviews()
         {
             string sqlStr = "SELECT name, Review.stars, content FROM UserTable, Review, Business WHERE Business.businessID = '" + this.businessID + "' AND Review.businessID = '" + this.businessID +
                 "' AND UserTable.userID = Review.userID;";
-            executeQuery(sqlStr, addGridRow);
+            executeQuery(sqlStr, addReviewGridRow);
         }
 
-        private void addGridRow(NpgsqlDataReader R)
+        private void addReviewGridRow(NpgsqlDataReader R)
         {
             reviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), stars = R.GetFloat(1), content = R.GetString(2) });
+        }
+
+        private void addOpenTimesGridRow(NpgsqlDataReader R)
+        {
+            openTimesDataGrid.Items.Add(new OpenTimes() { day = R.GetString(0), openTime = R.GetString(1), closeTime = R.GetString(2) });
         }
     }
 }

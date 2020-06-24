@@ -153,7 +153,6 @@ namespace Milestone1
             businessIDCol.Header = "businessID";
             businessIDCol.Width = 85;
             businessGrid.Columns.Add(businessIDCol);
-
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)

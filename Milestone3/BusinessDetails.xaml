@@ -7,16 +7,18 @@
         mc:Ignorable="d"
         Title="BusinessDetails" Height="450" Width="912.831">
     <Grid>
-        <Label x:Name="nameLabel" Content="Business Name" HorizontalAlignment="Left" Margin="35,19,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="stateLabel" Content="State" HorizontalAlignment="Left" Margin="35,136,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="cityLabel" Content="City" HorizontalAlignment="Left" Margin="35,94,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="nameLabel" Content="Business Name" HorizontalAlignment="Left" Margin="44,18,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="stateLabel" Content="State" HorizontalAlignment="Left" Margin="44,133,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="cityLabel" Content="City" HorizontalAlignment="Left" Margin="44,94,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="bname" HorizontalAlignment="Left" Height="23" Margin="215,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
         <TextBox x:Name="state" HorizontalAlignment="Left" Height="23" Margin="215,136,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
         <TextBox x:Name="city" HorizontalAlignment="Left" Height="23" Margin="215,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
         <DataGrid x:Name="reviewDataGrid" HorizontalAlignment="Left" Height="162" Margin="44,235,0,0" VerticalAlignment="Top" Width="819"/>
-        <Label x:Name="reviewLabel" Content="Reviews&#xD;&#xA;" HorizontalAlignment="Left" Height="29" Margin="35,206,0,0" VerticalAlignment="Top" Width="95"/>
-        <Label x:Name="addressLabel" Content="Address" HorizontalAlignment="Left" Margin="35,55,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="reviewLabel" Content="Reviews&#xD;&#xA;" HorizontalAlignment="Left" Height="29" Margin="44,206,0,0" VerticalAlignment="Top" Width="95"/>
+        <Label x:Name="addressLabel" Content="Address" HorizontalAlignment="Left" Margin="44,55,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="address" HorizontalAlignment="Left" Height="23" Margin="215,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="239"/>
+        <DataGrid x:Name="openTimesDataGrid" HorizontalAlignment="Left" Height="107" Margin="537,55,0,0" VerticalAlignment="Top" Width="326"/>
+        <Label x:Name="openTimesLabel" Content="Schedule" HorizontalAlignment="Left" Margin="537,18,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
