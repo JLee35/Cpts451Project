@@ -25,6 +25,8 @@ namespace Milestone1
         private object selectedCategoryToAdd = null;
         private object selectedCategoryToRemove = null;
 
+        public string SelectedUserID = null;
+
         public class Business
         {
             public string businessID { get; set; }
@@ -63,6 +65,7 @@ namespace Milestone1
             InitializeComponent();
             addStates();
             addColumns2BusinessGrid();
+            addColumns2UserFavoriteBusinessesDataGrid();
             addSortResultOptions();
         }
 
@@ -170,6 +173,39 @@ namespace Milestone1
             businessGrid.Columns.Add(businessIDCol);
         }
 
+        private void addColumns2UserFavoriteBusinessesDataGrid()
+        {
+            DataGridTextColumn nameCol = new DataGridTextColumn();
+            nameCol.Binding = new Binding("businessName");
+            nameCol.Header = "Business Name";
+            nameCol.Width = 150;
+            userFavoriteBusinessesDataGrid.Columns.Add(nameCol);
+
+            DataGridTextColumn starsCol = new DataGridTextColumn();
+            starsCol.Binding = new Binding("stars");
+            starsCol.Header = "Stars";
+            starsCol.Width = 75;
+            userFavoriteBusinessesDataGrid.Columns.Add(starsCol);
+
+            DataGridTextColumn cityCol = new DataGridTextColumn();
+            cityCol.Binding = new Binding("city");
+            cityCol.Header = "City";
+            cityCol.Width = 100;
+            userFavoriteBusinessesDataGrid.Columns.Add(cityCol);
+
+            DataGridTextColumn zipCol = new DataGridTextColumn();
+            zipCol.Binding = new Binding("zip");
+            zipCol.Header = "Zipcode";
+            zipCol.Width = 75;
+            userFavoriteBusinessesDataGrid.Columns.Add(zipCol);
+
+            DataGridTextColumn addressCol = new DataGridTextColumn();
+            addressCol.Binding = new Binding("address");
+            addressCol.Header = "Address";
+            addressCol.Width = 300;
+            userFavoriteBusinessesDataGrid.Columns.Add(addressCol);
+        }
+
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
         {
             using (var connection = new NpgsqlConnection(buildConnectionString()))
@@ -253,7 +289,7 @@ namespace Milestone1
                 Business B = businessGrid.Items[businessGrid.SelectedIndex] as Business;
                 if ((B.businessID != null) && (B.businessID.ToString().CompareTo("") != 0))
                 {
-                    BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString());
+                    BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString(), SelectedUserID);
                     businessWindow.Show();
                 }
             }
@@ -408,6 +444,7 @@ namespace Milestone1
         {
             if (userIDListBox.SelectedIndex > -1 && userIDListBox.SelectedItem != null)
             {
+                SelectedUserID = userIDListBox.SelectedItem.ToString();
                 ClearCurrentUserInfoFields();
                 UpdateCurrentUserInfoFields(userIDListBox.SelectedItem.ToString());
             }
@@ -415,8 +452,14 @@ namespace Milestone1
 
         private void UpdateCurrentUserInfoFields(string userID)
         {
-            string sqlStr = "SELECT name, avgStars, yelpingSince, latitude, longitude, numFans, votes FROM UserTable WHERE userID = '" + userID + "';";
-            executeQuery(sqlStr, AddCurrentUserInformation);
+            // Update general user information.
+            string sqlStr1 = "SELECT name, avgStars, yelpingSince, latitude, longitude, numFans, votes FROM UserTable WHERE userID = '" + userID + "';";
+            executeQuery(sqlStr1, AddCurrentUserInformation);
+
+            // Update Favorite Businesses (no data provided, so don't be suprised if nothing comes back)
+            string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
+                "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
+            executeQuery(sqlStr2, AddCurrentUserFavoriteBusinesses);
         }
 
         private void ClearCurrentUserInfoFields()
@@ -440,6 +483,11 @@ namespace Milestone1
             userLatTextBlock.Text = R.GetFloat(3).ToString();
             userLongTextBlock.Text = R.GetFloat(4).ToString();
             userFansTextBlock.Text = R.GetInt32(5).ToString();
+        }
+
+        public void AddCurrentUserFavoriteBusinesses(NpgsqlDataReader R)
+        {
+            userFavoriteBusinessesDataGrid.Items.Add(new Business() { businessName = R.GetString(0), stars = R.GetFloat(1), city = R.GetString(2), zip = R.GetInt32(3), address = R.GetString(4) });
         }
     }
 }

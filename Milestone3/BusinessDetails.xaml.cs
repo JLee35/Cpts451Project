@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +22,13 @@ namespace Milestone1
     public partial class BusinessDetails : Window
     {
         private string businessID = "";
-        public BusinessDetails(string businessID)
+        private string selectedUserID = "";
+
+        public BusinessDetails(string businessID, string selectedUserID)
         {
             InitializeComponent();
             this.businessID = String.Copy(businessID);
+            this.selectedUserID = String.Copy(selectedUserID);
             addColumns2ReviewGrid();
             addColumns2OpenTimesGrid();
             loadBusinessDetails();
@@ -169,6 +173,17 @@ namespace Milestone1
         private void addOpenTimesGridRow(NpgsqlDataReader R)
         {
             openTimesDataGrid.Items.Add(new OpenTimes() { day = R.GetString(0), openTime = R.GetTimeSpan(1), closeTime = R.GetTimeSpan(2) });
+        }
+
+        private void AddToFavoritesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
+            {
+                Debug.WriteLine("Adding businessID: " + this.businessID + " and userID: " + this.selectedUserID);
+
+                string sqlStr = "INSERT INTO UserFavorite (userID, businessID) VALUES ('" + this.selectedUserID + "', '" + this.businessID + "');";
+                executeQuery(sqlStr, null);
+            }
         }
     }
 }
