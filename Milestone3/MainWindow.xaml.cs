@@ -409,13 +409,14 @@ namespace Milestone1
             if (userIDListBox.SelectedIndex > -1 && userIDListBox.SelectedItem != null)
             {
                 ClearCurrentUserInfoFields();
-                UpdateCurrentUserInfoFields();
+                UpdateCurrentUserInfoFields(userIDListBox.SelectedItem.ToString());
             }
         }
 
-        private void UpdateCurrentUserInfoFields()
+        private void UpdateCurrentUserInfoFields(string userID)
         {
-            Debug.WriteLine("Updating fields with new user data.");
+            string sqlStr = "SELECT name, avgStars, yelpingSince, latitude, longitude, numFans, votes FROM UserTable WHERE userID = '" + userID + "';";
+            executeQuery(sqlStr, AddCurrentUserInformation);
         }
 
         private void ClearCurrentUserInfoFields()
@@ -429,6 +430,16 @@ namespace Milestone1
             userFavoriteBusinessesDataGrid.Items.Clear();
             userFriendsDataGrid.Items.Clear();
             userFriendsReviewDataGrid.Items.Clear();
+        }
+
+        private void AddCurrentUserInformation(NpgsqlDataReader R)
+        {
+            userNameTextBlock.Text = R.GetString(0);
+            userStarsTextBlock.Text = R.GetFloat(1).ToString();
+            userYelpingSinceTextBlock.Text = R.GetDate(2).ToString();
+            userLatTextBlock.Text = R.GetFloat(3).ToString();
+            userLongTextBlock.Text = R.GetFloat(4).ToString();
+            userFansTextBlock.Text = R.GetInt32(5).ToString();
         }
     }
 }
