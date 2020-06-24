@@ -67,7 +67,7 @@
                     <Label x:Name="userFavoriteBusinessesLabel" Content="Favorite Businesses" HorizontalAlignment="Left" Margin="10,502,0,0" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
                     <DataGrid x:Name="userFavoriteBusinessesDataGrid" HorizontalAlignment="Left" Height="268" Margin="30,537,0,0" VerticalAlignment="Top" Width="600" Grid.ColumnSpan="2"/>
                     <Label x:Name="userFriendsLabel" Content="Friends" HorizontalAlignment="Left" Margin="221.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
-                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="415" Margin="247.6,44,0,0" VerticalAlignment="Top" Width="308" Grid.Column="1"/>
+                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="304" Margin="248,44,0,0" VerticalAlignment="Top" Width="308" Grid.Column="1"/>
                     <Label x:Name="userFriendsReviewLabel" Content="What are my friends reviewing?" HorizontalAlignment="Left" Margin="603.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
                     <DataGrid x:Name="userFriendsReviewDataGrid" HorizontalAlignment="Left" Height="761" Margin="636.6,44,0,0" VerticalAlignment="Top" Width="489" Grid.Column="1"/>
                 </Grid>

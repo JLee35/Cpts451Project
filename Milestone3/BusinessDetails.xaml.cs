@@ -34,6 +34,7 @@ namespace Milestone1
             loadBusinessDetails();
             loadReviews();
             loadOpenTimes();
+            addReviewScoreOptions();
         }
 
         public class Review
@@ -100,7 +101,7 @@ namespace Milestone1
             return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
-        private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
+        private bool executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
         {
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -119,11 +120,13 @@ namespace Milestone1
                     {
                         Console.WriteLine(ex.Message.ToString());
                         System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                        return false;
                     }
                     finally
                     {
                         connection.Close();
                     }
+                    return true;
                 }
             }
         }
@@ -134,7 +137,7 @@ namespace Milestone1
             address.Text = R.GetString(1);
             city.Text = R.GetString(2);
             state.Text = R.GetString(3);
-            
+
             if (R.GetInt16(4) == 0)
             {
                 status.Text = "Closed";
@@ -143,9 +146,9 @@ namespace Milestone1
             else
             {
                 status.Text = "Open";
-            }   
+            }
         }
-        
+
         private void loadBusinessDetails()
         {
             string sqlStr = "SELECT businessName, address, city, businessState, openStatus FROM Business WHERE businessID = '" + this.businessID + "';";
@@ -184,6 +187,47 @@ namespace Milestone1
                 string sqlStr = "INSERT INTO UserFavorite (userID, businessID) VALUES ('" + this.selectedUserID + "', '" + this.businessID + "');";
                 executeQuery(sqlStr, null);
             }
+        }
+
+        private void addReviewScoreOptions()
+        {
+            ReviewScoreList.Items.Add("5");
+            ReviewScoreList.Items.Add("4");
+            ReviewScoreList.Items.Add("3");
+            ReviewScoreList.Items.Add("2");
+            ReviewScoreList.Items.Add("1");
+
+            // Set default selection.
+            ReviewScoreList.SelectedIndex = 0;
+        }
+
+        //idk how to change the button name
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            bool success = false;
+            string sqlStr;
+            string reviewID;
+            if (ReviewContentBox.Text != null && this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
+            {
+                Debug.WriteLine("Adding businessID: " + this.businessID + " and userID: " + this.selectedUserID);
+                reviewID = this.selectedUserID + this.businessID;
+                while (!success)
+                {
+                    sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
+                        this.selectedUserID + "', '" + this.businessID + "', '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', '" + ReviewContentBox.Text + "');";
+                    success = executeQuery(sqlStr, null);
+                    if (!success)
+                        reviewID = reviewID + 'A'; //super makeshift solution, i know
+                }
+                reviewDataGrid.Items.Clear();
+                loadReviews();
+            }
+        }
+
+        //don't delete this function, i added it like a retard and now idk how to get rid of it
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Milestone1
     {
         private object selectedCategoryToAdd = null;
         private object selectedCategoryToRemove = null;
+        private string selectedOrder = "businessName";
 
         public string SelectedUserID = null;
 
@@ -257,8 +258,15 @@ namespace Milestone1
             userFriendsReviewDataGrid.Columns.Add(textCol);
         }
 
-        private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
+        private void executeQuery(string sqlstr, string order, Action<NpgsqlDataReader> myf)
         {
+            if (order != null && sqlstr.Length > 1)
+            {
+                if (sqlstr[sqlstr.Length - 1] == ';')
+                    sqlstr = sqlstr.Substring(0, sqlstr.Length - 2) + " ORDER BY " + order + ';';
+                else
+                    sqlstr = sqlstr + " ORDER BY " + order + ';';
+            }
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
                 connection.Open();
@@ -306,7 +314,7 @@ namespace Milestone1
             if ( stateList.SelectedIndex > -1 )
             {
                 string sqlStr = "SELECT distinct city FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
-                executeQuery(sqlStr, addCity);
+                executeQuery(sqlStr, null, addCity);
             }
         }
 
@@ -324,18 +332,18 @@ namespace Milestone1
             {
                 // Populate zip codes in city in zipList.
                 string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY zip";
-                executeQuery(sqlStr1, addZip);
+                executeQuery(sqlStr1, null, addZip);
 
                 // Populate businesses in city in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addBusinessGridRow);
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
 
         // Toggle BusinessDetails window when business item is selected from listbox.
         private void BusinessGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (businessGrid.SelectedIndex > -1)
+            if (businessGrid.SelectedIndex > -1 && SelectedUserID != null)
             {
                 Business B = businessGrid.Items[businessGrid.SelectedIndex] as Business;
                 if ((B.businessID != null) && (B.businessID.ToString().CompareTo("") != 0))
@@ -355,11 +363,11 @@ namespace Milestone1
             {
                 // Populate business categories within selected zip.
                 string sqlStr1 = "SELECT distinct name FROM Category, Business WHERE Business.businessID = Category.businessID AND zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
-                executeQuery(sqlStr1, addCategory);
+                executeQuery(sqlStr1, null, addCategory);
 
                 // Populate businesses within zip in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addBusinessGridRow);
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
 
@@ -411,18 +419,16 @@ namespace Milestone1
                 string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID FROM Business, " + 
                     GetCategoryItems() + " WHERE zip = '" +
                     zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = filteredCategories.query0ID";
-                
-                sqlStr += " ORDER BY businessName;";
 
                 // Empty existing ListBox.
                 businessGrid.Items.Clear();
-                executeQuery(sqlStr, addBusinessGridRow);
+                executeQuery(sqlStr, selectedOrder, addBusinessGridRow);
             }
             
             else
             {
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addBusinessGridRow);
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
             
         }
@@ -467,7 +473,18 @@ namespace Milestone1
 
         private void SortResultsByList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Debug.WriteLine("TODO: Add SortResultsByList_SelectionChanged code.");
+            if (sortResultsByList.SelectedItem.ToString() == "Name (default)")
+                selectedOrder = "businessName";
+            else if (sortResultsByList.SelectedItem.ToString() == "Highest rating (stars)")
+                selectedOrder = "stars DESC";
+            else if (sortResultsByList.SelectedItem.ToString() == "Most reviewed")
+                selectedOrder = "reviewCount DESC";
+            else if (sortResultsByList.SelectedItem.ToString() == "Best review rating (highest avg review rating)")
+                selectedOrder = "reviewRating DESC";
+            else if (sortResultsByList.SelectedItem.ToString() == "Most check-ins")
+                selectedOrder = "numCheckins DESC";
+            else if (sortResultsByList.SelectedItem.ToString() == "Nearest")
+                selectedOrder = "businessName"; //not implemented yet
         }
 
         private void SetCurrentUserTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -483,7 +500,7 @@ namespace Milestone1
             } 
 
             string sqlStr = "SELECT userID FROM UserTable WHERE name LIKE '" + nameToSearchFor + "%';";
-            executeQuery(sqlStr, AddToUserNameList);
+            executeQuery(sqlStr, null, AddToUserNameList);
         }
         
         private void AddToUserNameList(NpgsqlDataReader R)
@@ -505,21 +522,26 @@ namespace Milestone1
         {
             // Update general user information.
             string sqlStr1 = "SELECT name, avgStars, yelpingSince, latitude, longitude, numFans, votes FROM UserTable WHERE userID = '" + userID + "';";
-            executeQuery(sqlStr1, AddCurrentUserInformation);
+            executeQuery(sqlStr1, null, AddCurrentUserInformation);
 
             // Update Favorite Businesses (no data provided, so don't be suprised if nothing comes back)
             string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
                 "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
-            executeQuery(sqlStr2, AddCurrentUserFavoriteBusinesses);
+            executeQuery(sqlStr2, null, AddCurrentUserFavoriteBusinesses);
 
             // Update friends list.
             string sqlStr3 = "SELECT name, avgStars, yelpingSince FROM UserTable, UserFriend WHERE UserFriend.friendUserID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
-            executeQuery(sqlStr3, addCurrentUserFriends);
+            executeQuery(sqlStr3, null, addCurrentUserFriends);
 
             // Update friends reviews list.
-            string sqlStr4 = "SELECT UserTable.name, businessName, city, content FROM UserTable, UserFriend, Review, Business WHERE UserFriend.friendUserID = UserTable.userID AND Business.businessID = Review.businessID AND " +
-                "Review.userID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
-            executeQuery(sqlStr4, addCurrentUserFriendsReviews);
+            string sqlStr4 = "SELECT UserTable.name, businessName, city, content " +
+                            "FROM (" +
+                            "SELECT UserFriend.friendUserID, MAX(reviewID) as recentReview " +
+                            "FROM UserTable, UserFriend, Review " +
+                            "WHERE UserFriend.friendUserID = UserTable.userID AND Review.userID = UserTable.userID AND UserFriend.userID = '" + userID + "' " +
+                            "GROUP BY UserFriend.friendUserID) as mostRecent, UserTable, Business, Review " +
+                            "WHERE mostRecent.friendUserID = UserTable.userID AND Review.reviewID = mostRecent.recentReview AND Review.businessID = Business.businessID;";
+            executeQuery(sqlStr4, null, addCurrentUserFriendsReviews);
         }
 
         private void ClearCurrentUserInfoFields()
