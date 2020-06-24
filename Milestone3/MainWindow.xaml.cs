@@ -48,6 +48,7 @@ namespace Milestone1
             InitializeComponent();
             addStates();
             addColumns2Grid();
+            addSortResultOptions();
         }
 
         private string buildConnectionString()
@@ -82,6 +83,19 @@ namespace Milestone1
                     }
                 }
             }
+        }
+
+        private void addSortResultOptions()
+        {
+            sortResultsByList.Items.Add("Name (default)");
+            sortResultsByList.Items.Add("Highest rating (stars)");
+            sortResultsByList.Items.Add("Most reviewed");
+            sortResultsByList.Items.Add("Best review rating (highest avg review rating)");
+            sortResultsByList.Items.Add("Most check-ins");
+            sortResultsByList.Items.Add("Nearest");
+
+            // Set default selection.
+            sortResultsByList.SelectedIndex = 0;
         }
 
         private void addColumns2Grid()
