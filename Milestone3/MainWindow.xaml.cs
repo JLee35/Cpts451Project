@@ -50,6 +50,14 @@ namespace Milestone1
             public DateTime yelpingSince { get; set; }
         }
 
+        public class Review
+        {
+            public string userName { get; set; }
+            public string businessName { get; set; }
+            public string city { get; set; }
+            public string text { get; set; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +67,7 @@ namespace Milestone1
             addColumns2BusinessGrid();
             addColumns2UserFavoriteBusinessesDataGrid();
             addColumns2UserFriendsDataGrid();
+            addColumns2UserFriendsReviewDataGrid();
 
             addSortResultOptions();
         }
@@ -219,6 +228,33 @@ namespace Milestone1
             yelpingSinceCol.Header = "Yelping Since";
             yelpingSinceCol.Width = 150;
             userFriendsDataGrid.Columns.Add(yelpingSinceCol);
+        }
+
+        private void addColumns2UserFriendsReviewDataGrid()
+        {
+            DataGridTextColumn nameCol = new DataGridTextColumn();
+            nameCol.Binding = new Binding("userName");
+            nameCol.Header = "User Name";
+            nameCol.Width = 100;
+            userFriendsReviewDataGrid.Columns.Add(nameCol);
+
+            DataGridTextColumn businessNameCol = new DataGridTextColumn();
+            businessNameCol.Binding = new Binding("businessName");
+            businessNameCol.Header = "Business";
+            businessNameCol.Width = 100;
+            userFriendsReviewDataGrid.Columns.Add(businessNameCol);
+
+            DataGridTextColumn cityCol = new DataGridTextColumn();
+            cityCol.Binding = new Binding("city");
+            cityCol.Header = "City";
+            cityCol.Width = 100;
+            userFriendsReviewDataGrid.Columns.Add(cityCol);
+
+            DataGridTextColumn textCol = new DataGridTextColumn();
+            textCol.Binding = new Binding("text");
+            textCol.Header = "Text";
+            textCol.Width = 400;
+            userFriendsReviewDataGrid.Columns.Add(textCol);
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -476,9 +512,14 @@ namespace Milestone1
                 "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
             executeQuery(sqlStr2, AddCurrentUserFavoriteBusinesses);
 
-            // Update friends list
+            // Update friends list.
             string sqlStr3 = "SELECT name, avgStars, yelpingSince FROM UserTable, UserFriend WHERE UserFriend.friendUserID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
             executeQuery(sqlStr3, addCurrentUserFriends);
+
+            // Update friends reviews list.
+            string sqlStr4 = "SELECT UserTable.name, businessName, city, content FROM UserTable, UserFriend, Review, Business WHERE UserFriend.friendUserID = UserTable.userID AND Business.businessID = Review.businessID AND " +
+                "Review.userID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
+            executeQuery(sqlStr4, addCurrentUserFriendsReviews);
         }
 
         private void ClearCurrentUserInfoFields()
@@ -513,5 +554,11 @@ namespace Milestone1
         {
             userFriendsDataGrid.Items.Add(new User() { name = R.GetString(0), avgStars = R.GetFloat(1), yelpingSince = R.GetDateTime(2) });
         }
+
+        private void addCurrentUserFriendsReviews(NpgsqlDataReader R)
+        {
+            userFriendsReviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), businessName = R.GetString(1), city = R.GetString(2), text = R.GetString(3) });
+        }
+
     }
 }
