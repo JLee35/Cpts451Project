@@ -38,30 +38,34 @@
             </TabItem>
             <TabItem Header="User Information">
                 <Grid Background="#FFE5E5E5">
-                    <Label x:Name="setCurrentUserLabel" Content="Set Current User" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14"/>
-                    <TextBox x:Name="setCurrentUserTextBox" HorizontalAlignment="Left" Height="23" Margin="30,44,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="236"/>
-                    <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="100" Margin="30,87,0,0" VerticalAlignment="Top" Width="236"/>
-                    <Label x:Name="userInformationLabel" Content="User Information" HorizontalAlignment="Left" Margin="10,212,0,0" VerticalAlignment="Top" FontSize="14"/>
-                    <Label x:Name="userNameLabel" Content="Name:" HorizontalAlignment="Left" Margin="30,246,0,0" VerticalAlignment="Top"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="37*"/>
+                        <ColumnDefinition Width="577*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="setCurrentUserLabel" Content="Set Current User" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="setCurrentUserTextBox" HorizontalAlignment="Left" Height="23" Margin="30,44,0,0" TextWrapping="Wrap" Text="Enter user name" VerticalAlignment="Top" Width="236" TextChanged="SetCurrentUserTextBox_TextChanged" Grid.ColumnSpan="2"/>
+                    <ListBox x:Name="userIDListBox" HorizontalAlignment="Left" Height="100" Margin="30,87,0,0" VerticalAlignment="Top" Width="236" Grid.ColumnSpan="2" SelectionChanged="UserIDListBox_SelectionChanged"/>
+                    <Label x:Name="userInformationLabel" Content="User Information" HorizontalAlignment="Left" Margin="10,212,0,0" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
+                    <Label x:Name="userNameLabel" Content="Name:" HorizontalAlignment="Left" Margin="30,246,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                     <Label x:Name="userStarsLabel" Content="Stars:" HorizontalAlignment="Left" Margin="30,281,0,0" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="userNameTextBlock" HorizontalAlignment="Left" Margin="107,251,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White"/>
-                    <TextBlock x:Name="userStarsTextBlock" HorizontalAlignment="Left" Margin="107,287,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="40" Background="White" RenderTransformOrigin="0.189,-0.902"/>
-                    <Label x:Name="userFansLabel" Content="Fans:" HorizontalAlignment="Left" Margin="173,281,0,0" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="userFansTextBlock" HorizontalAlignment="Left" Margin="226,287,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="40" Background="White" RenderTransformOrigin="0.189,-0.902"/>
-                    <Label x:Name="userYelpingSinceLabelTop" Content="Yelping" HorizontalAlignment="Left" Margin="30,322,0,0" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="userNameTextBlock" HorizontalAlignment="Left" Margin="32.6,251,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <TextBlock x:Name="userStarsTextBlock" HorizontalAlignment="Left" Margin="32.6,287,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="40" Background="White" RenderTransformOrigin="0.189,-0.902" Grid.Column="1"/>
+                    <Label x:Name="userFansLabel" Content="Fans:" HorizontalAlignment="Left" Margin="98.6,281,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <TextBlock x:Name="userFansTextBlock" HorizontalAlignment="Left" Margin="151.6,287,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="40" Background="White" RenderTransformOrigin="0.189,-0.902" Grid.Column="1"/>
+                    <Label x:Name="userYelpingSinceLabelTop" Content="Yelping" HorizontalAlignment="Left" Margin="30,322,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                     <Label x:Name="userYelpingSinceLabelBot" Content="Since:" HorizontalAlignment="Left" Margin="30,337,0,0" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="userYelpingSinceTextBlock" HorizontalAlignment="Left" Margin="107,337,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White"/>
-                    <Label x:Name="userLocationLabel" Content="Location:" HorizontalAlignment="Left" Margin="30,377,0,0" VerticalAlignment="Top"/>
-                    <Label x:Name="userLatLabel" Content="Lat:" HorizontalAlignment="Left" Margin="59,403,0,0" VerticalAlignment="Top"/>
-                    <Label x:Name="userLongLabel" Content="Long:" HorizontalAlignment="Left" Margin="49,434,0,0" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="userLatTextBlock" HorizontalAlignment="Left" Margin="107,410,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White"/>
-                    <TextBlock x:Name="userLongTextBlock" HorizontalAlignment="Left" Margin="107,441,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White"/>
-                    <Label x:Name="userFavoriteBusinessesLabel" Content="Favorite Businesses" HorizontalAlignment="Left" Margin="10,502,0,0" VerticalAlignment="Top" FontSize="14"/>
-                    <DataGrid x:Name="userFavoriteBusinessesDataGrid" HorizontalAlignment="Left" Height="268" Margin="30,537,0,0" VerticalAlignment="Top" Width="600"/>
-                    <Label x:Name="userFriendsLabel" Content="Friends" HorizontalAlignment="Left" Margin="296,9,0,0" VerticalAlignment="Top" FontSize="14"/>
-                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="415" Margin="322,44,0,0" VerticalAlignment="Top" Width="308"/>
-                    <Label x:Name="userFriendsReviewLabel" Content="What are my friends reviewing?" HorizontalAlignment="Left" Margin="678,9,0,0" VerticalAlignment="Top" FontSize="14"/>
-                    <DataGrid x:Name="userFriendsDataGrid_Copy" HorizontalAlignment="Left" Height="761" Margin="711,44,0,0" VerticalAlignment="Top" Width="489"/>
+                    <TextBlock x:Name="userYelpingSinceTextBlock" HorizontalAlignment="Left" Margin="32.6,337,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <Label x:Name="userLocationLabel" Content="Location:" HorizontalAlignment="Left" Margin="30,377,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <Label x:Name="userLatLabel" Content="Lat:" HorizontalAlignment="Left" Margin="59,403,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <Label x:Name="userLongLabel" Content="Long:" HorizontalAlignment="Left" Margin="49,434,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBlock x:Name="userLatTextBlock" HorizontalAlignment="Left" Margin="32.6,410,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <TextBlock x:Name="userLongTextBlock" HorizontalAlignment="Left" Margin="32.6,441,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <Label x:Name="userFavoriteBusinessesLabel" Content="Favorite Businesses" HorizontalAlignment="Left" Margin="10,502,0,0" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
+                    <DataGrid x:Name="userFavoriteBusinessesDataGrid" HorizontalAlignment="Left" Height="268" Margin="30,537,0,0" VerticalAlignment="Top" Width="600" Grid.ColumnSpan="2"/>
+                    <Label x:Name="userFriendsLabel" Content="Friends" HorizontalAlignment="Left" Margin="221.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
+                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="415" Margin="247.6,44,0,0" VerticalAlignment="Top" Width="308" Grid.Column="1"/>
+                    <Label x:Name="userFriendsReviewLabel" Content="What are my friends reviewing?" HorizontalAlignment="Left" Margin="603.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
+                    <DataGrid x:Name="userFriendsReviewDataGrid" HorizontalAlignment="Left" Height="761" Margin="636.6,44,0,0" VerticalAlignment="Top" Width="489" Grid.Column="1"/>
                 </Grid>
             </TabItem>
         </TabControl>

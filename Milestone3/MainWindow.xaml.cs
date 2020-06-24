@@ -43,11 +43,26 @@ namespace Milestone1
             public int zip { get; set; }
         }
 
+        public class User
+        {
+            public string userID { get; set; }
+            public string name { get; set; }
+            
+            public float avgStars { get; set; }
+            public float latitude { get; set; }
+            public float longitude { get; set; }
+
+            public int numFans { get; set; }
+            public int votes { get; set; }
+
+            public DateTime yelpingSince { get; set; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
             addStates();
-            addColumns2Grid();
+            addColumns2BusinessGrid();
             addSortResultOptions();
         }
 
@@ -98,7 +113,7 @@ namespace Milestone1
             sortResultsByList.SelectedIndex = 0;
         }
 
-        private void addColumns2Grid()
+        private void addColumns2BusinessGrid()
         {
             DataGridTextColumn nameCol = new DataGridTextColumn();
             nameCol.Binding = new Binding("businessName");
@@ -208,7 +223,7 @@ namespace Milestone1
             }
         }
 
-        private void addGridRow(NpgsqlDataReader R)
+        private void addBusinessGridRow(NpgsqlDataReader R)
         {
             businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8)});
         }
@@ -226,7 +241,7 @@ namespace Milestone1
 
                 // Populate businesses in city in listbox.
                 string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addGridRow);
+                executeQuery(sqlStr2, addBusinessGridRow);
             }
         }
 
@@ -257,7 +272,7 @@ namespace Milestone1
 
                 // Populate businesses within zip in listbox.
                 string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addGridRow);
+                executeQuery(sqlStr2, addBusinessGridRow);
             }
         }
 
@@ -314,13 +329,13 @@ namespace Milestone1
 
                 // Empty existing ListBox.
                 businessGrid.Items.Clear();
-                executeQuery(sqlStr, addGridRow);
+                executeQuery(sqlStr, addBusinessGridRow);
             }
             
             else
             {
                 string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY businessName;";
-                executeQuery(sqlStr2, addGridRow);
+                executeQuery(sqlStr2, addBusinessGridRow);
             }
             
         }
@@ -366,6 +381,54 @@ namespace Milestone1
         private void SortResultsByList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Debug.WriteLine("TODO: Add SortResultsByList_SelectionChanged code.");
+        }
+
+        private void SetCurrentUserTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            PopulateUserIDListBoxWithSearchResults(setCurrentUserTextBox.Text);
+        }
+
+        private void PopulateUserIDListBoxWithSearchResults(string nameToSearchFor)
+        {
+            if (userIDListBox != null && userIDListBox.Items.Count > 0)
+            {
+                userIDListBox.Items.Clear();
+            } 
+
+            string sqlStr = "SELECT userID FROM UserTable WHERE name LIKE '" + nameToSearchFor + "%';";
+            executeQuery(sqlStr, AddToUserNameList);
+        }
+        
+        private void AddToUserNameList(NpgsqlDataReader R)
+        {
+            userIDListBox.Items.Add(R.GetString(0));
+        }
+
+        private void UserIDListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (userIDListBox.SelectedIndex > -1 && userIDListBox.SelectedItem != null)
+            {
+                ClearCurrentUserInfoFields();
+                UpdateCurrentUserInfoFields();
+            }
+        }
+
+        private void UpdateCurrentUserInfoFields()
+        {
+            Debug.WriteLine("Updating fields with new user data.");
+        }
+
+        private void ClearCurrentUserInfoFields()
+        {
+            userNameTextBlock.Text = "";
+            userStarsTextBlock.Text = "";
+            userFansTextBlock.Text = "";
+            userYelpingSinceTextBlock.Text = "";
+            userLatTextBlock.Text = "";
+            userLongTextBlock.Text = "";
+            userFavoriteBusinessesDataGrid.Items.Clear();
+            userFriendsDataGrid.Items.Clear();
+            userFriendsReviewDataGrid.Items.Clear();
         }
     }
 }
