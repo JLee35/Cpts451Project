@@ -139,8 +139,7 @@ namespace Milestone1
             else
             {
                 status.Text = "Open";
-            }
-            
+            }   
         }
         
         private void loadBusinessDetails()
