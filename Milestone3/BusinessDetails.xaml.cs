@@ -98,7 +98,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
+            return "Host = localhost; Username = postgres; Database = milestone3DB; password=kuljack2";
         }
 
         private bool executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
@@ -120,6 +120,36 @@ namespace Milestone1
                     {
                         Console.WriteLine(ex.Message.ToString());
                         System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
+                        return false;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                    return true;
+                }
+            }
+        }
+
+        //Im forcing checkins to create and sql error, do not want error window to pop up every time.
+        private bool executeQuery_Checkin(string sqlstr, Action<NpgsqlDataReader> myf)
+        {
+            using (var connection = new NpgsqlConnection(buildConnectionString()))
+            {
+                connection.Open();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = sqlstr;
+                    try
+                    {
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                            myf(reader);
+                    }
+                    catch (NpgsqlException ex)
+                    {
+                        Console.WriteLine(ex.Message.ToString());
                         return false;
                     }
                     finally
@@ -185,6 +215,30 @@ namespace Milestone1
                 Debug.WriteLine("Adding businessID: " + this.businessID + " and userID: " + this.selectedUserID);
 
                 string sqlStr = "INSERT INTO UserFavorite (userID, businessID) VALUES ('" + this.selectedUserID + "', '" + this.businessID + "');";
+                executeQuery(sqlStr, null);
+            }
+        }
+
+        //FIRST Attempt to insert, if query fails. run update statement, update numcheckins after on completes.
+        private void updateCheckInsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
+            {
+                Debug.WriteLine("Add to checkin with current time and Increment numCheckIns IN BUSINESS businessID: " + this.businessID);
+
+                string sqlStr;
+
+                string dow = DateTime.Now.DayOfWeek.ToString();
+                string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
+
+                sqlStr = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinamount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', " + "1" + ");";
+                if(!executeQuery_Checkin(sqlStr, null))
+                {
+                    sqlStr = "UPDATE checkin SET checkinamount = checkinamount + 1 WHERE checkinbusinessID = '" + this.businessID + "' AND checkinday = '" + dow + "' AND checkintime = '" + hour + "'; ";
+                    executeQuery(sqlStr, null);
+                }
+
+                sqlStr = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
                 executeQuery(sqlStr, null);
             }
         }

@@ -25,6 +25,7 @@
         <TextBox x:Name="ReviewContentBox" HorizontalAlignment="Left" Height="131" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="876,206,0,0" TextChanged="TextBox_TextChanged"/>
         <Button x:Name="ReviewSubmit" Content="Submit" HorizontalAlignment="Left" Margin="952,362,0,0" VerticalAlignment="Top" Width="44" Click="Button_Click"/>
         <ComboBox x:Name="ReviewScoreList" HorizontalAlignment="Left" Margin="876,360,0,0" VerticalAlignment="Top" Width="41" RenderTransformOrigin="3.726,2.58"/>
+        <Button x:Name="updateCheckInsButton" Content="Check In" HorizontalAlignment="Left" Margin="907,123,0,0" VerticalAlignment="Top" Width="89" Height="62" Click="updateCheckInsButton_Click"/>
 
     </Grid>
 </Window>
