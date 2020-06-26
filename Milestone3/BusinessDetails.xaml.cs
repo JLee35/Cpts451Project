@@ -23,7 +23,9 @@ namespace Milestone1
     {
         private string businessID = "";
         private string selectedUserID = "";
+
         private bool currentCheckInExists = false;
+        private bool currentReviewExists = false;
 
         // Need a reference to associated MainWindow.
         private MainWindow mainWindow = null;
@@ -209,10 +211,25 @@ namespace Milestone1
             if (ReviewContentBox.Text != null && this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
             {
                 string reviewID = (this.selectedUserID + this.businessID).ToString();
+                string sqlStr = "";
 
-                string sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
+                // Check and see if user has already left review, if they have then update existing.
+                string sqlStr2 = "SELECT * FROM Review WHERE reviewID = '" + reviewID + "';";
+                executeQuery(sqlStr2, setCurrentReviewExists);
+
+                if (currentReviewExists)
+                {
+                    sqlStr = "UPDATE Review SET stars = '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', " +
+                        "content = '" + ReviewContentBox.Text + "' WHERE reviewID = '" + reviewID + "';";
+                }
+
+                // If user hasn't reviewed this business, then add a fresh review.
+                else
+                {
+                    sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
                             this.selectedUserID + "', '" + this.businessID + "', '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', '" + ReviewContentBox.Text + "');";
-
+                }
+                
                 executeQuery(sqlStr, null);
                 reviewDataGrid.Items.Clear();
                 loadReviews();
@@ -249,6 +266,11 @@ namespace Milestone1
         private void setCurrentCheckInExists(NpgsqlDataReader R)
         {
             currentCheckInExists = R.HasRows;
+        }
+
+        private void setCurrentReviewExists(NpgsqlDataReader R)
+        {
+            currentReviewExists = R.HasRows;
         }
     }
 }
