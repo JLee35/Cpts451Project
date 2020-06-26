@@ -348,7 +348,7 @@ namespace Milestone1
                 Business B = businessGrid.Items[businessGrid.SelectedIndex] as Business;
                 if ((B.businessID != null) && (B.businessID.ToString().CompareTo("") != 0))
                 {
-                    BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString(), SelectedUserID);
+                    BusinessDetails businessWindow = new BusinessDetails(B.businessID.ToString(), SelectedUserID, this);
                     businessWindow.Show();
                 }
             }
@@ -524,10 +524,7 @@ namespace Milestone1
             string sqlStr1 = "SELECT name, avgStars, yelpingSince, latitude, longitude, numFans, votes FROM UserTable WHERE userID = '" + userID + "';";
             executeQuery(sqlStr1, null, AddCurrentUserInformation);
 
-            // Update Favorite Businesses (no data provided, so don't be suprised if nothing comes back)
-            string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
-                "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
-            executeQuery(sqlStr2, null, AddCurrentUserFavoriteBusinesses);
+            UpdateUserFavoriteBusinesses(userID);
 
             // Update friends list.
             string sqlStr3 = "SELECT name, avgStars, yelpingSince FROM UserTable, UserFriend WHERE UserFriend.friendUserID = UserTable.userID AND UserFriend.userID = '" + userID + "';";
@@ -542,6 +539,14 @@ namespace Milestone1
                             "GROUP BY UserFriend.friendUserID) as mostRecent, UserTable, Business, Review " +
                             "WHERE mostRecent.friendUserID = UserTable.userID AND Review.reviewID = mostRecent.recentReview AND Review.businessID = Business.businessID;";
             executeQuery(sqlStr4, null, addCurrentUserFriendsReviews);
+        }
+
+        internal void UpdateUserFavoriteBusinesses(string userID)
+        {
+            // Update Favorite Businesses (no data provided, so don't be suprised if nothing comes back)
+            string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
+                "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
+            executeQuery(sqlStr2, null, AddCurrentUserFavoriteBusinesses);
         }
 
         private void ClearCurrentUserInfoFields()
@@ -581,6 +586,5 @@ namespace Milestone1
         {
             userFriendsReviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), businessName = R.GetString(1), city = R.GetString(2), text = R.GetString(3) });
         }
-
     }
 }

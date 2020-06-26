@@ -24,11 +24,15 @@ namespace Milestone1
         private string businessID = "";
         private string selectedUserID = "";
 
-        public BusinessDetails(string businessID, string selectedUserID)
+        // Need a reference to associated MainWindow.
+        private MainWindow homePage = null;
+
+        public BusinessDetails(string businessID, string selectedUserID, MainWindow homePage)
         {
             InitializeComponent();
             this.businessID = String.Copy(businessID);
             this.selectedUserID = String.Copy(selectedUserID);
+            this.homePage = homePage;
             addColumns2ReviewGrid();
             addColumns2OpenTimesGrid();
             loadBusinessDetails();
@@ -98,10 +102,10 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milestone3DB; password=kuljack2";
+            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
-        private bool executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
+        private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)
         {
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -120,46 +124,45 @@ namespace Milestone1
                     {
                         Console.WriteLine(ex.Message.ToString());
                         System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                        return false;
+                        
                     }
                     finally
                     {
                         connection.Close();
                     }
-                    return true;
                 }
             }
         }
 
-        //Im forcing checkins to create and sql error, do not want error window to pop up every time.
-        private bool executeQuery_Checkin(string sqlstr, Action<NpgsqlDataReader> myf)
-        {
-            using (var connection = new NpgsqlConnection(buildConnectionString()))
-            {
-                connection.Open();
-                using (var cmd = new NpgsqlCommand())
-                {
-                    cmd.Connection = connection;
-                    cmd.CommandText = sqlstr;
-                    try
-                    {
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                            myf(reader);
-                    }
-                    catch (NpgsqlException ex)
-                    {
-                        Console.WriteLine(ex.Message.ToString());
-                        return false;
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
-                    return true;
-                }
-            }
-        }
+        ////Im forcing checkins to create and sql error, do not want error window to pop up every time.
+        //private bool executeQuery_Checkin(string sqlstr, Action<NpgsqlDataReader> myf)
+        //{
+        //    using (var connection = new NpgsqlConnection(buildConnectionString()))
+        //    {
+        //        connection.Open();
+        //        using (var cmd = new NpgsqlCommand())
+        //        {
+        //            cmd.Connection = connection;
+        //            cmd.CommandText = sqlstr;
+        //            try
+        //            {
+        //                var reader = cmd.ExecuteReader();
+        //                while (reader.Read())
+        //                    myf(reader);
+        //            }
+        //            catch (NpgsqlException ex)
+        //            {
+        //                Console.WriteLine(ex.Message.ToString());
+        //                return false;
+        //            }
+        //            finally
+        //            {
+        //                connection.Close();
+        //            }
+        //            return true;
+        //        }
+        //    }
+        //}
 
         private void setBusinessDetails(NpgsqlDataReader R)
         {
@@ -212,36 +215,35 @@ namespace Milestone1
         {
             if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
             {
-                Debug.WriteLine("Adding businessID: " + this.businessID + " and userID: " + this.selectedUserID);
-
                 string sqlStr = "INSERT INTO UserFavorite (userID, businessID) VALUES ('" + this.selectedUserID + "', '" + this.businessID + "');";
                 executeQuery(sqlStr, null);
+                homePage.UpdateUserFavoriteBusinesses(this.selectedUserID);
             }
         }
 
-        //FIRST Attempt to insert, if query fails. run update statement, update numcheckins after on completes.
-        private void updateCheckInsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
-            {
-                Debug.WriteLine("Add to checkin with current time and Increment numCheckIns IN BUSINESS businessID: " + this.businessID);
+        ////FIRST Attempt to insert, if query fails. run update statement, update numcheckins after on completes.
+        //private void updateCheckInsButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
+        //    {
+        //        Debug.WriteLine("Add to checkin with current time and Increment numCheckIns IN BUSINESS businessID: " + this.businessID);
 
-                string sqlStr;
+        //        string sqlStr;
 
-                string dow = DateTime.Now.DayOfWeek.ToString();
-                string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
+        //        string dow = DateTime.Now.DayOfWeek.ToString();
+        //        string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
 
-                sqlStr = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinamount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', " + "1" + ");";
-                if(!executeQuery_Checkin(sqlStr, null))
-                {
-                    sqlStr = "UPDATE checkin SET checkinamount = checkinamount + 1 WHERE checkinbusinessID = '" + this.businessID + "' AND checkinday = '" + dow + "' AND checkintime = '" + hour + "'; ";
-                    executeQuery(sqlStr, null);
-                }
+        //        sqlStr = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinamount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', " + "1" + ");";
+        //        if(!executeQuery_Checkin(sqlStr, null))
+        //        {
+        //            sqlStr = "UPDATE checkin SET checkinamount = checkinamount + 1 WHERE checkinbusinessID = '" + this.businessID + "' AND checkinday = '" + dow + "' AND checkintime = '" + hour + "'; ";
+        //            executeQuery(sqlStr, null);
+        //        }
 
-                sqlStr = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
-                executeQuery(sqlStr, null);
-            }
-        }
+        //        sqlStr = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
+        //        executeQuery(sqlStr, null);
+        //    }
+        //}
 
         private void addReviewScoreOptions()
         {
@@ -254,34 +256,21 @@ namespace Milestone1
             // Set default selection.
             ReviewScoreList.SelectedIndex = 0;
         }
-
-        //idk how to change the button name
-        private void Button_Click(object sender, RoutedEventArgs e)
+        
+        private void ReviewSubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            bool success = false;
-            string sqlStr;
-            string reviewID;
             if (ReviewContentBox.Text != null && this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
             {
-                Debug.WriteLine("Adding businessID: " + this.businessID + " and userID: " + this.selectedUserID);
-                reviewID = this.selectedUserID + this.businessID;
-                while (!success)
-                {
-                    sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
+                string reviewID = (this.selectedUserID + this.businessID).ToString();
+
+                string sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
                         this.selectedUserID + "', '" + this.businessID + "', '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', '" + ReviewContentBox.Text + "');";
-                    success = executeQuery(sqlStr, null);
-                    if (!success)
-                        reviewID = reviewID + 'A'; //super makeshift solution, i know
-                }
+
+                executeQuery(sqlStr, null);
+
                 reviewDataGrid.Items.Clear();
                 loadReviews();
             }
-        }
-
-        //don't delete this function, i added it like a retard and now idk how to get rid of it
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
     }
 }
