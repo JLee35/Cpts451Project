@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1082
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Milestone1", "Milestone1\Milestone1.csproj", "{4693D7C7-ECA8-4166-A200-55778B739957}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Milestone3", "Milestone3.csproj", "{4693D7C7-ECA8-4166-A200-55778B739957}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C339F6E2-3AF6-4B42-A290-3F5BC2B24EE7}
+		SolutionGuid = {10877352-25A4-4723-A61A-50027CBBF21B}
 	EndGlobalSection
 EndGlobal
