@@ -23,6 +23,7 @@ namespace Milestone1
     {
         private string businessID = "";
         private string selectedUserID = "";
+        private bool currentCheckInExists = false;
 
         // Need a reference to associated MainWindow.
         private MainWindow mainWindow = null;
@@ -210,10 +211,9 @@ namespace Milestone1
                 string reviewID = (this.selectedUserID + this.businessID).ToString();
 
                 string sqlStr = "INSERT INTO Review (reviewID, userID, businessID, stars, content) VALUES ('" + reviewID + "', '" +
-                        this.selectedUserID + "', '" + this.businessID + "', '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', '" + ReviewContentBox.Text + "');";
+                            this.selectedUserID + "', '" + this.businessID + "', '" + Int32.Parse(ReviewScoreList.SelectedItem.ToString()) + "', '" + ReviewContentBox.Text + "');";
 
                 executeQuery(sqlStr, null);
-
                 reviewDataGrid.Items.Clear();
                 loadReviews();
             }
@@ -226,15 +226,29 @@ namespace Milestone1
                 string dow = DateTime.Now.DayOfWeek.ToString();
                 string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
 
-                string sqlStr1 = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinAmount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', 1);";
-                executeQuery(sqlStr1, null);
+                // We need to check and see if there is already a checkin that exists for this dow and hour.
+                string sqlStr = "SELECT * FROM CheckIn Where checkInDay = '" + dow + "' AND checkInTime = '" + hour + "' AND checkInBusinessID = '" + this.businessID + "';";
+                executeQuery(sqlStr, setCurrentCheckInExists);
 
+                // If the DB does not contain a matching CheckIn, then add it.
+                if (!currentCheckInExists)
+                {
+                    string sqlStr1 = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinAmount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', 1);";
+                    executeQuery(sqlStr1, null);
+                }
+
+                // If DB does contain a matching CheckIn, then just update it.
                 string sqlStr2 = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
                 executeQuery(sqlStr2, null);
 
                 string sqlStr3 = "UPDATE CheckIn SET checkInAmount = checkInAmount + 1 WHERE checkInBusinessID = '" + this.businessID + "' AND checkInDay = '" + dow + "' AND checkInTime = '" + hour + "'; ";
                 executeQuery(sqlStr3, null);
             }
+        }
+
+        private void setCurrentCheckInExists(NpgsqlDataReader R)
+        {
+            currentCheckInExists = R.HasRows;
         }
     }
 }
