@@ -3,7 +3,7 @@ import sys
 import psycopg2
 
 # TODO: Update path for input files.
-dataPath = 'C:/Users/Admin/Desktop/School/CptS451/'
+dataPath = ''
 
 def cleanStr4SQL(s):
 	return s.replace("'","`").replace("\n"," ")
@@ -47,11 +47,11 @@ def insert2BusinessTable():
 			data = json.loads(line)
 			businessID = cleanStr4SQL(data['business_id'])
 
-			sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip) " \
+			sql_str = "INSERT INTO Business (businessID, businessName, address, avgScore, city, numCheckins, reviewCount, reviewRating, businessState, stars, openStatus, zip, latitude, longitude) " \
 					  + "VALUES ('" + businessID + "','" + cleanStr4SQL(data['name']) + "','" + cleanStr4SQL(data['address']) + "','" \
 					  + str(0) + "','" + cleanStr4SQL(data['city']) + "','" + str(0)  \
 					  + "','" + str(0) + "','" + str(0) + "','" + cleanStr4SQL(data['state']) + "','" + str(data['stars']) + "','" + str(data['is_open']) \
-					  + "','" + str(data['postal_code']) + "');"
+					  + "','" + str(data['postal_code']) + "','" + str(data['latitude']) + "','" + str(data['longitude']) + "');"
 
 			try:
 				cur.execute(sql_str)
