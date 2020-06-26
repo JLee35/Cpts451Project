@@ -105,7 +105,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milestone3DB; password=kuljack2";
+            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
         private void executeQuery(string sqlstr, Action<NpgsqlDataReader> myf)

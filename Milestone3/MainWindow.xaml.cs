@@ -32,6 +32,7 @@ namespace Milestone1
             public float avgScore { get; set; }
             public float reviewRating { get; set; }
             public float stars { get; set; }
+            public float distance { get; set; }
 
             public int numCheckins { get; set; }
             public int reviewCount { get; set; }
@@ -78,7 +79,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = milestone3DB; password=kuljack2";
+            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
         }
 
         private void addStates()
@@ -184,8 +185,7 @@ namespace Milestone1
             businessIDCol.Header = "distance";
             businessIDCol.Width = 85;
             businessGrid.Columns.Add(distanceCol);
-
-
+            
         }
 
         private void addColumns2UserFavoriteBusinessesDataGrid()
@@ -340,7 +340,7 @@ namespace Milestone1
 
         private void addBusinessGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8)});
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8), distance = R.GetFloat(9)});
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
