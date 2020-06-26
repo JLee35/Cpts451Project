@@ -78,7 +78,7 @@ namespace Milestone1
 
         private string buildConnectionString()
         {
-            return "Host = localhost; Username = postgres; Database = yelpdb; password=mustafa";
+            return "Host = localhost; Username = postgres; Database = milestone3DB; password=kuljack2";
         }
 
         private void addStates()
@@ -178,6 +178,14 @@ namespace Milestone1
             businessIDCol.Header = "businessID";
             businessIDCol.Width = 85;
             businessGrid.Columns.Add(businessIDCol);
+
+            DataGridTextColumn distanceCol = new DataGridTextColumn();
+            businessIDCol.Binding = new Binding("distance");
+            businessIDCol.Header = "distance";
+            businessIDCol.Width = 85;
+            businessGrid.Columns.Add(distanceCol);
+
+
         }
 
         private void addColumns2UserFavoriteBusinessesDataGrid()
