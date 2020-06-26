@@ -72,11 +72,11 @@ CREATE OR REPLACE FUNCTION myDistance(
   RETURNS double precision
 AS $$
       (select (6371 * acos( 
-                cos( radians(lat2) ) 
-              * cos( radians( lat1 ) ) 
-              * cos( radians( lng1 ) - radians(lng2) ) 
-              + sin( radians(lat2) ) 
-              * sin( radians( lat1 ) )
+                cos( radians(blat) ) 
+              * cos( radians( alat ) ) 
+              * cos( radians( alng ) - radians(blng) ) 
+              + sin( radians(blat) ) 
+              * sin( radians( alat ) )
                 ) ) as distance); 
 $$  
 LANGUAGE SQL;
