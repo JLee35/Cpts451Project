@@ -62,15 +62,16 @@
                     <Label x:Name="userLocationLabel" Content="Location:" HorizontalAlignment="Left" Margin="30,377,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                     <Label x:Name="userLatLabel" Content="Lat:" HorizontalAlignment="Left" Margin="59,403,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                     <Label x:Name="userLongLabel" Content="Long:" HorizontalAlignment="Left" Margin="49,434,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <TextBlock x:Name="userLatTextBlock" HorizontalAlignment="Left" Margin="32.6,410,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
-                    <TextBlock x:Name="userLongTextBlock" HorizontalAlignment="Left" Margin="32.6,441,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <TextBox x:Name="userLatTextBox" HorizontalAlignment="Left" Margin="32.6,410,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
+                    <TextBox x:Name="userLongTextBox" HorizontalAlignment="Left" Margin="32.6,441,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="159" Background="White" Grid.Column="1"/>
                     <Label x:Name="userFavoriteBusinessesLabel" Content="Favorite Businesses" HorizontalAlignment="Left" Margin="10,502,0,0" VerticalAlignment="Top" FontSize="14" Grid.ColumnSpan="2"/>
                     <DataGrid x:Name="userFavoriteBusinessesDataGrid" HorizontalAlignment="Left" Height="245" Margin="30,537,0,0" VerticalAlignment="Top" Width="600" Grid.ColumnSpan="2" SelectionChanged="UserFavoriteBusinessesDataGrid_SelectionChanged"/>
                     <Label x:Name="userFriendsLabel" Content="Friends" HorizontalAlignment="Left" Margin="221.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
-                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="304" Margin="248,44,0,0" VerticalAlignment="Top" Width="308" Grid.Column="1"/>
+                    <DataGrid x:Name="userFriendsDataGrid" HorizontalAlignment="Left" Height="446" Margin="247.6,44,0,0" VerticalAlignment="Top" Width="308" Grid.Column="1"/>
                     <Label x:Name="userFriendsReviewLabel" Content="What are my friends reviewing?" HorizontalAlignment="Left" Margin="603.6,9,0,0" VerticalAlignment="Top" FontSize="14" Grid.Column="1"/>
                     <DataGrid x:Name="userFriendsReviewDataGrid" HorizontalAlignment="Left" Height="761" Margin="636.6,44,0,0" VerticalAlignment="Top" Width="489" Grid.Column="1"/>
                     <Button x:Name="removeSelectedFavoriteButton" Content="Remove Selected Favorite" Grid.Column="1" HorizontalAlignment="Left" Margin="98.6,787,0,0" VerticalAlignment="Top" Width="297" Click="RemoveSelectedFavoriteButton_Click"/>
+                    <Button x:Name="updateLocationButton" Content="Update Location" Grid.Column="1" HorizontalAlignment="Left" Margin="32.6,471,0,0" VerticalAlignment="Top" Width="159" Click="UpdateLocationButton_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>

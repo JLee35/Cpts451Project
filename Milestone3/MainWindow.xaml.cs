@@ -563,8 +563,8 @@ namespace Milestone1
             userStarsTextBlock.Text = "";
             userFansTextBlock.Text = "";
             userYelpingSinceTextBlock.Text = "";
-            userLatTextBlock.Text = "";
-            userLongTextBlock.Text = "";
+            userLatTextBox.Text = "";
+            userLongTextBox.Text = "";
             userFavoriteBusinessesDataGrid.Items.Clear();
             userFriendsDataGrid.Items.Clear();
             userFriendsReviewDataGrid.Items.Clear();
@@ -575,8 +575,8 @@ namespace Milestone1
             userNameTextBlock.Text = R.GetString(0);
             userStarsTextBlock.Text = R.GetFloat(1).ToString();
             userYelpingSinceTextBlock.Text = R.GetDate(2).ToString();
-            userLatTextBlock.Text = R.GetFloat(3).ToString();
-            userLongTextBlock.Text = R.GetFloat(4).ToString();
+            userLatTextBox.Text = R.GetFloat(3).ToString();
+            userLongTextBox.Text = R.GetFloat(4).ToString();
             userFansTextBlock.Text = R.GetInt32(5).ToString();
         }
 
@@ -608,6 +608,33 @@ namespace Milestone1
             string sqlStr = "DELETE FROM UserFavorite WHERE userID = '" + SelectedUserID + "' AND businessID = '" + selectedFavoriteToRemove.businessID + "';";
             executeQuery(sqlStr, null, null);
             UpdateUserFavoriteBusinesses(SelectedUserID);
+        }
+
+        private void UpdateLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Test to see if lat/long input is a number and can be parsed.
+            int.TryParse(userLatTextBox.Text, out int latResult);
+            int.TryParse(userLongTextBox.Text, out int longResult);
+            
+            // Input is not a number, prompt user to correct.
+            if (latResult == 0 || longResult == 0)
+            {
+                Console.WriteLine("Error - User latitude or longitude input is not a number.");
+                System.Windows.MessageBox.Show("Invalid Input: Please provide a floating point value for Latitude and Longitude");
+            }
+
+            // Input is a number, so parse to float.
+            else
+            {
+                // Even though we provide the SQL query with a string, we need to put these values in decimal format.
+                float latitude = float.Parse(userLatTextBox.Text);
+                float longitude = float.Parse(userLongTextBox.Text);
+
+                string sqlStr = "UPDATE UserTable SET latitude = '" + latitude.ToString() + "', " +
+                        "longitude = '" + longitude.ToString() + "' WHERE userID = '" + SelectedUserID + "';";
+
+                executeQuery(sqlStr, null, null);
+            }
         }
     }
 }
