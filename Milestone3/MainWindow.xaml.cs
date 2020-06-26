@@ -14,8 +14,9 @@ namespace Milestone1
     {
         private object selectedCategoryToAdd = null;
         private object selectedCategoryToRemove = null;
-        private string selectedOrder = "businessName";
+        private Business selectedFavoriteToRemove = null;
 
+        private string selectedOrder = "businessName";
         public string SelectedUserID = null;
 
         public class Business
@@ -208,6 +209,12 @@ namespace Milestone1
             addressCol.Header = "Address";
             addressCol.Width = 300;
             userFavoriteBusinessesDataGrid.Columns.Add(addressCol);
+
+            DataGridTextColumn businessIDCol = new DataGridTextColumn();
+            businessIDCol.Binding = new Binding("businessID");
+            businessIDCol.Header = "businessID";
+            businessIDCol.Width = 50;
+            userFavoriteBusinessesDataGrid.Columns.Add(businessIDCol);
         }
 
         private void addColumns2UserFriendsDataGrid()
@@ -545,7 +552,7 @@ namespace Milestone1
         {
             userFavoriteBusinessesDataGrid.Items.Clear();
             
-            string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
+            string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address, Business.businessID FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
                 "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
             executeQuery(sqlStr2, null, AddCurrentUserFavoriteBusinesses);
         }
@@ -575,7 +582,7 @@ namespace Milestone1
 
         private void AddCurrentUserFavoriteBusinesses(NpgsqlDataReader R)
         {
-            userFavoriteBusinessesDataGrid.Items.Add(new Business() { businessName = R.GetString(0), stars = R.GetFloat(1), city = R.GetString(2), zip = R.GetInt32(3), address = R.GetString(4) });
+            userFavoriteBusinessesDataGrid.Items.Add(new Business() { businessName = R.GetString(0), stars = R.GetFloat(1), city = R.GetString(2), zip = R.GetInt32(3), address = R.GetString(4), businessID = R.GetString(5) });
         }
 
         private void addCurrentUserFriends(NpgsqlDataReader R)
@@ -586,6 +593,21 @@ namespace Milestone1
         private void addCurrentUserFriendsReviews(NpgsqlDataReader R)
         {
             userFriendsReviewDataGrid.Items.Add(new Review() { userName = R.GetString(0), businessName = R.GetString(1), city = R.GetString(2), text = R.GetString(3) });
+        }
+
+        private void UserFavoriteBusinessesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((userFavoriteBusinessesDataGrid.SelectedItem != null) && (userFavoriteBusinessesDataGrid.SelectedIndex > -1))
+            {
+                selectedFavoriteToRemove = userFavoriteBusinessesDataGrid.SelectedItem as Business;
+            }
+        }
+
+        private void RemoveSelectedFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            string sqlStr = "DELETE FROM UserFavorite WHERE userID = '" + SelectedUserID + "' AND businessID = '" + selectedFavoriteToRemove.businessID + "';";
+            executeQuery(sqlStr, null, null);
+            UpdateUserFavoriteBusinesses(SelectedUserID);
         }
     }
 }
