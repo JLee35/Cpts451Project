@@ -543,7 +543,8 @@ namespace Milestone1
 
         internal void UpdateUserFavoriteBusinesses(string userID)
         {
-            // Update Favorite Businesses (no data provided, so don't be suprised if nothing comes back)
+            userFavoriteBusinessesDataGrid.Items.Clear();
+            
             string sqlStr2 = "SELECT Business.businessName, Business.stars, Business.city, Business.zip, Business.address FROM Business, UserFavorite, UserTable WHERE UserTable.userID = '" + userID + "' AND " +
                 "UserFavorite.userID = '" + userID + "' AND Business.businessID = UserFavorite.businessID;";
             executeQuery(sqlStr2, null, AddCurrentUserFavoriteBusinesses);

@@ -25,14 +25,14 @@ namespace Milestone1
         private string selectedUserID = "";
 
         // Need a reference to associated MainWindow.
-        private MainWindow homePage = null;
+        private MainWindow mainWindow = null;
 
-        public BusinessDetails(string businessID, string selectedUserID, MainWindow homePage)
+        public BusinessDetails(string businessID, string selectedUserID, MainWindow mainWindow)
         {
             InitializeComponent();
             this.businessID = String.Copy(businessID);
             this.selectedUserID = String.Copy(selectedUserID);
-            this.homePage = homePage;
+            this.mainWindow = mainWindow;
             addColumns2ReviewGrid();
             addColumns2OpenTimesGrid();
             loadBusinessDetails();
@@ -124,7 +124,7 @@ namespace Milestone1
                     {
                         Console.WriteLine(ex.Message.ToString());
                         System.Windows.MessageBox.Show("SQL Error - " + ex.Message.ToString());
-                        
+
                     }
                     finally
                     {
@@ -133,36 +133,6 @@ namespace Milestone1
                 }
             }
         }
-
-        ////Im forcing checkins to create and sql error, do not want error window to pop up every time.
-        //private bool executeQuery_Checkin(string sqlstr, Action<NpgsqlDataReader> myf)
-        //{
-        //    using (var connection = new NpgsqlConnection(buildConnectionString()))
-        //    {
-        //        connection.Open();
-        //        using (var cmd = new NpgsqlCommand())
-        //        {
-        //            cmd.Connection = connection;
-        //            cmd.CommandText = sqlstr;
-        //            try
-        //            {
-        //                var reader = cmd.ExecuteReader();
-        //                while (reader.Read())
-        //                    myf(reader);
-        //            }
-        //            catch (NpgsqlException ex)
-        //            {
-        //                Console.WriteLine(ex.Message.ToString());
-        //                return false;
-        //            }
-        //            finally
-        //            {
-        //                connection.Close();
-        //            }
-        //            return true;
-        //        }
-        //    }
-        //}
 
         private void setBusinessDetails(NpgsqlDataReader R)
         {
@@ -217,33 +187,9 @@ namespace Milestone1
             {
                 string sqlStr = "INSERT INTO UserFavorite (userID, businessID) VALUES ('" + this.selectedUserID + "', '" + this.businessID + "');";
                 executeQuery(sqlStr, null);
-                homePage.UpdateUserFavoriteBusinesses(this.selectedUserID);
+                mainWindow.UpdateUserFavoriteBusinesses(this.selectedUserID);
             }
         }
-
-        ////FIRST Attempt to insert, if query fails. run update statement, update numcheckins after on completes.
-        //private void updateCheckInsButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
-        //    {
-        //        Debug.WriteLine("Add to checkin with current time and Increment numCheckIns IN BUSINESS businessID: " + this.businessID);
-
-        //        string sqlStr;
-
-        //        string dow = DateTime.Now.DayOfWeek.ToString();
-        //        string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
-
-        //        sqlStr = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinamount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', " + "1" + ");";
-        //        if(!executeQuery_Checkin(sqlStr, null))
-        //        {
-        //            sqlStr = "UPDATE checkin SET checkinamount = checkinamount + 1 WHERE checkinbusinessID = '" + this.businessID + "' AND checkinday = '" + dow + "' AND checkintime = '" + hour + "'; ";
-        //            executeQuery(sqlStr, null);
-        //        }
-
-        //        sqlStr = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
-        //        executeQuery(sqlStr, null);
-        //    }
-        //}
 
         private void addReviewScoreOptions()
         {
@@ -256,7 +202,7 @@ namespace Milestone1
             // Set default selection.
             ReviewScoreList.SelectedIndex = 0;
         }
-        
+
         private void ReviewSubmitButton_Click(object sender, RoutedEventArgs e)
         {
             if (ReviewContentBox.Text != null && this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
@@ -270,6 +216,24 @@ namespace Milestone1
 
                 reviewDataGrid.Items.Clear();
                 loadReviews();
+            }
+        }
+
+        private void UpdateCheckInsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.businessID != null && this.businessID != "" && this.selectedUserID != null && this.selectedUserID != "")
+            {
+                string dow = DateTime.Now.DayOfWeek.ToString();
+                string hour = DateTime.Now.ToString("yyyy-MM-dd HH :mm:ssffff").Split(' ')[1] + ":00:00";
+
+                string sqlStr1 = "INSERT INTO Checkin (CheckInBusinessID, checkInDay, checkInTime, checkinAmount) VALUES ('" + this.businessID + "',  '" + dow + "', '" + hour + "', 1);";
+                executeQuery(sqlStr1, null);
+
+                string sqlStr2 = "UPDATE Business SET numCheckins = numCheckins + 1 WHERE businessID = '" + this.businessID + "';";
+                executeQuery(sqlStr2, null);
+
+                string sqlStr3 = "UPDATE CheckIn SET checkInAmount = checkInAmount + 1 WHERE checkInBusinessID = '" + this.businessID + "' AND checkInDay = '" + dow + "' AND checkInTime = '" + hour + "'; ";
+                executeQuery(sqlStr3, null);
             }
         }
     }
