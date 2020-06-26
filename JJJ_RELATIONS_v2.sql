@@ -21,6 +21,8 @@ CREATE TABLE Business (
 	stars real,
 	openStatus int, /* 0 = closed, 1 = open */
 	zip int
+	latitude real,
+	longitude real
 );
 
 CREATE TABLE UserTable (
