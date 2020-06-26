@@ -62,3 +62,21 @@ WHERE checkInBusinessID = '-2X9U7v-Avoib-ki0y85bA' AND checkInDay = 'Thursday' A
 
 SELECT * FROM CheckIn WHERE checkInBusinessID = '-2X9U7v-Avoib-ki0y85bA';
 SELECT numcheckins FROM Business WHERE BusinessID = '-2X9U7v-Avoib-ki0y85bA';
+
+#code taken from https://stackoverflow.com/questions/24370975/find-distance-between-two-points-using-latitude-and-longitude-in-mysql
+CREATE OR REPLACE FUNCTION myDistance( 
+                            alat double precision,
+                            alng double precision,
+                            blat double precision,
+                            blng double precision)
+  RETURNS double precision
+AS $$
+      (select (6371 * acos( 
+                cos( radians(lat2) ) 
+              * cos( radians( lat1 ) ) 
+              * cos( radians( lng1 ) - radians(lng2) ) 
+              + sin( radians(lat2) ) 
+              * sin( radians( lat1 ) )
+                ) ) as distance); 
+$$  
+LANGUAGE SQL;

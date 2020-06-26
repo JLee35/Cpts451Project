@@ -17,6 +17,8 @@ namespace Milestone1
         private Business selectedFavoriteToRemove = null;
 
         private string selectedOrder = "businessName";
+        private string selectedUserLat = null;
+        private string selectedUserLong = null;
         public string SelectedUserID = null;
 
         public class Business
@@ -269,10 +271,18 @@ namespace Milestone1
         {
             if (order != null && sqlstr.Length > 1)
             {
-                if (sqlstr[sqlstr.Length - 1] == ';')
-                    sqlstr = sqlstr.Substring(0, sqlstr.Length - 2) + " ORDER BY " + order + ';';
+                if (order == "distance")
+                {
+                    sqlstr = "SELECT *, myDistance(" + selectedUserLat + "," + selectedUserLong +
+                        ",query.latitude, query.longitude) as distance FROM (" + sqlstr + ") as query ORDER BY distance;";
+                }
                 else
-                    sqlstr = sqlstr + " ORDER BY " + order + ';';
+                {
+                    if (sqlstr[sqlstr.Length - 1] == ';')
+                        sqlstr = sqlstr.Substring(0, sqlstr.Length - 2) + " ORDER BY " + order + ';';
+                    else
+                        sqlstr = sqlstr + " ORDER BY " + order + ';';
+                }
             }
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -345,7 +355,7 @@ namespace Milestone1
                 executeQuery(sqlStr1, null, addZip);
 
                 // Populate businesses in city in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid, latitude, longitude FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
                 executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
@@ -376,7 +386,7 @@ namespace Milestone1
                 executeQuery(sqlStr1, null, addCategory);
 
                 // Populate businesses within zip in listbox.
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid, latitude, longitude FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
                 executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
@@ -433,7 +443,7 @@ namespace Milestone1
             bool zipIsSelected = zipList.SelectedItem != null;
             bool categoriesAreSelected = selectedCategoriesList.Items.Count > 0;
 
-            sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID FROM Business ";
+            sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID, latitude, longitude FROM Business ";
             
             // If categories are selected, then the user has selected a state, city, and zip.
             if (categoriesAreSelected)
@@ -518,7 +528,7 @@ namespace Milestone1
             else if (sortResultsByList.SelectedItem.ToString() == "Most check-ins")
                 selectedOrder = "numCheckins DESC";
             else if (sortResultsByList.SelectedItem.ToString() == "Nearest")
-                selectedOrder = "businessName"; //not implemented yet
+                selectedOrder = "distance";
             
             SearchBusinessButton_Click(null, null);
         }
@@ -606,6 +616,8 @@ namespace Milestone1
             userYelpingSinceTextBlock.Text = R.GetDate(2).ToString();
             userLatTextBox.Text = R.GetFloat(3).ToString();
             userLongTextBox.Text = R.GetFloat(4).ToString();
+            selectedUserLat = R.GetFloat(3).ToString();
+            selectedUserLong = R.GetFloat(4).ToString();
             userFansTextBlock.Text = R.GetInt32(5).ToString();
         }
 
