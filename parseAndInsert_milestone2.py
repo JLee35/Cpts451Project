@@ -3,7 +3,7 @@ import sys
 import psycopg2
 
 # TODO: Update path for input files.
-dataPath = ''
+dataPath = 'C:/Users/kulja/Documents/451_Stuff_Summer/Milestone2/Cpts451Project/'
 
 def cleanStr4SQL(s):
 	return s.replace("'","`").replace("\n"," ")
@@ -26,7 +26,7 @@ def printInsertError(tableName, error):
 
 def getDBConnection():
 	# TODO: Update dbname, user, host, and password for your machine.
-	return psycopg2.connect("dbname='yelpdb' user='postgres' host='localhost' password='mustafa'")
+	return psycopg2.connect("dbname='milestone3DB' user='postgres' host='localhost' password='kuljack2'")
 
 
 def insert2BusinessTable():
@@ -271,9 +271,48 @@ def insert2UserFriendTable():
 	print(count_line)
 	f.close()
 
-
+'''
 insert2BusinessTable()
 insert2UserTable()
 insert2CheckInTable()
 insert2ReviewTable()
 insert2UserFriendTable()
+'''
+
+def updateBusiness():
+	print("updating business")
+	with open(dataPath + 'yelp_business.JSON','r') as f:
+		line = f.readline()
+		count_line = 0
+
+		try:
+			conn = getDBConnection()
+		except Exception as error:
+			printDBConnectionError()
+
+		cur = conn.cursor()
+
+		while line:
+			data = json.loads(line)
+
+			businessID = cleanStr4SQL(data['business_id'])
+
+			sql_str = "update business set latitude = " + str(data['latitude']) + " , longitude = " + str(data['longitude']) + " where businessID = '" + businessID + "';"
+
+			try:
+				cur.execute(sql_str)
+			except Exception as error:
+				printInsertError("business", error)
+
+			conn.commit()
+
+			line = f.readline()
+			count_line +=1
+
+		cur.close()
+		conn.close()
+
+	print(count_line)
+	f.close()
+
+updateBusiness()

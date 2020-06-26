@@ -17,8 +17,8 @@ namespace Milestone1
         private Business selectedFavoriteToRemove = null;
 
         private string selectedOrder = "businessName";
-        private string selectedUserLat = null;
-        private string selectedUserLong = null;
+        private string selectedUserLat = "0";
+        private string selectedUserLong = "0";
         public string SelectedUserID = null;
 
         public class Business
@@ -32,6 +32,7 @@ namespace Milestone1
             public float avgScore { get; set; }
             public float reviewRating { get; set; }
             public float stars { get; set; }
+            public float distance { get; set; }
 
             public int numCheckins { get; set; }
             public int reviewCount { get; set; }
@@ -178,6 +179,13 @@ namespace Milestone1
             businessIDCol.Header = "businessID";
             businessIDCol.Width = 85;
             businessGrid.Columns.Add(businessIDCol);
+
+            DataGridTextColumn distanceCol = new DataGridTextColumn();
+            businessIDCol.Binding = new Binding("distance");
+            businessIDCol.Header = "distance";
+            businessIDCol.Width = 85;
+            businessGrid.Columns.Add(distanceCol);
+            
         }
 
         private void addColumns2UserFavoriteBusinessesDataGrid()
@@ -271,18 +279,10 @@ namespace Milestone1
         {
             if (order != null && sqlstr.Length > 1)
             {
-                if (order == "distance")
-                {
-                    sqlstr = "SELECT *, myDistance(" + selectedUserLat + "," + selectedUserLong +
-                        ",query.latitude, query.longitude) as distance FROM (" + sqlstr + ") as query ORDER BY distance;";
-                }
-                else
-                {
-                    if (sqlstr[sqlstr.Length - 1] == ';')
+                if (sqlstr[sqlstr.Length - 1] == ';')
                         sqlstr = sqlstr.Substring(0, sqlstr.Length - 2) + " ORDER BY " + order + ';';
                     else
                         sqlstr = sqlstr + " ORDER BY " + order + ';';
-                }
             }
             using (var connection = new NpgsqlConnection(buildConnectionString()))
             {
@@ -340,7 +340,7 @@ namespace Milestone1
 
         private void addBusinessGridRow(NpgsqlDataReader R)
         {
-            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8)});
+            businessGrid.Items.Add(new Business() { businessName = R.GetString(0), address = R.GetString(1), city = R.GetString(2), businessState = R.GetString(3), zip = R.GetInt32(4), stars = R.GetFloat(5), reviewCount = R.GetInt32(6), numCheckins = R.GetInt32(7), businessID = R.GetString(8), distance = R.GetFloat(9)});
         }
 
         private void CityList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -356,6 +356,8 @@ namespace Milestone1
 
                 // Populate businesses in city in listbox.
                 string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid, latitude, longitude FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                sqlStr2 = "SELECT *, myDistance(" + selectedUserLat + "," + selectedUserLong +
+                        ",query.latitude, query.longitude) as distance FROM (" + sqlStr2 + ") as query";
                 executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
@@ -387,6 +389,8 @@ namespace Milestone1
 
                 // Populate businesses within zip in listbox.
                 string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid, latitude, longitude FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
+                sqlStr2 = "SELECT *, myDistance(" + selectedUserLat + "," + selectedUserLong +
+                        ",query.latitude, query.longitude) as distance FROM (" + sqlStr2 + ") as query";
                 executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
             }
         }
@@ -473,7 +477,8 @@ namespace Milestone1
                     sqlStr += " AND zip = '" + zipList.SelectedItem.ToString() + "'";
                 }
             }
-            
+            sqlStr = "SELECT *, myDistance(" + selectedUserLat + "," + selectedUserLong +
+                        ",query.latitude, query.longitude) as distance FROM (" + sqlStr + ") as query";
             executeQuery(sqlStr, selectedOrder, addBusinessGridRow);
         }
 
