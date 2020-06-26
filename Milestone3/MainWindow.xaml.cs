@@ -320,8 +320,11 @@ namespace Milestone1
             cityList.Items.Clear();
             if ( stateList.SelectedIndex > -1 )
             {
-                string sqlStr = "SELECT distinct city FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' ORDER BY city";
+                string sqlStr = "SELECT distinct city FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "';";
                 executeQuery(sqlStr, null, addCity);
+
+                // Refresh business list.
+                SearchBusinessButton_Click(null, null);
             }
         }
 
@@ -338,7 +341,7 @@ namespace Milestone1
             if (cityList.SelectedIndex > -1)
             {
                 // Populate zip codes in city in zipList.
-                string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY zip";
+                string sqlStr1 = "SELECT distinct zip FROM Business WHERE businessState = '" + stateList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "';";
                 executeQuery(sqlStr1, null, addZip);
 
                 // Populate businesses in city in listbox.
@@ -369,7 +372,7 @@ namespace Milestone1
             if (zipList.SelectedIndex > -1)
             {
                 // Populate business categories within selected zip.
-                string sqlStr1 = "SELECT distinct name FROM Category, Business WHERE Business.businessID = Category.businessID AND zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' ORDER BY name;";
+                string sqlStr1 = "SELECT distinct name FROM Category, Business WHERE Business.businessID = Category.businessID AND zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "';";
                 executeQuery(sqlStr1, null, addCategory);
 
                 // Populate businesses within zip in listbox.
@@ -420,24 +423,48 @@ namespace Milestone1
 
         private void SearchBusinessButton_Click(object sender, RoutedEventArgs e)
         {
-            // If categories are selected then add them into the query.
-            if (selectedCategoriesList.Items.Count > 0)
-            {
-                string sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID FROM Business, " + 
-                    GetCategoryItems() + " WHERE zip = '" +
-                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = filteredCategories.query0ID";
+            // Empty existing ListBox.
+            businessGrid.Items.Clear();
 
-                // Empty existing ListBox.
-                businessGrid.Items.Clear();
-                executeQuery(sqlStr, selectedOrder, addBusinessGridRow);
+            string sqlStr = "";
+
+            bool stateIsSelected = stateList.SelectedItem != null;
+            bool cityIsSelected = cityList.SelectedItem != null;
+            bool zipIsSelected = zipList.SelectedItem != null;
+            bool categoriesAreSelected = selectedCategoriesList.Items.Count > 0;
+
+            sqlStr = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessID FROM Business ";
+            
+            // If categories are selected, then the user has selected a state, city, and zip.
+            if (categoriesAreSelected)
+            {
+                sqlStr += ", " + GetCategoryItems() + " WHERE zip = '" +
+                    zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "' AND  Business.businessID = filteredCategories.query0ID";
             }
             
+            // Build query based on what the user has provided without categories.
             else
             {
-                string sqlStr2 = "SELECT businessName, address, city, businessState, zip, stars, reviewCount, numCheckins, businessid FROM Business WHERE zip = '" + zipList.SelectedItem.ToString() + "' AND city = '" + cityList.SelectedItem.ToString() + "'";
-                executeQuery(sqlStr2, selectedOrder, addBusinessGridRow);
+                // If state is specified, add to query.
+                if (stateIsSelected)
+                {
+                    sqlStr += "WHERE businessState = '" + stateList.SelectedItem.ToString() + "'";
+                }
+
+                // If city is specified then state must have also been selected.
+                if (cityIsSelected)
+                {
+                    sqlStr += " AND city = '" + cityList.SelectedItem.ToString() + "'";
+                }
+
+                // If zip is specified then city must have also been selected.
+                if (zipIsSelected)
+                {
+                    sqlStr += " AND zip = '" + zipList.SelectedItem.ToString() + "'";
+                }
             }
             
+            executeQuery(sqlStr, selectedOrder, addBusinessGridRow);
         }
 
         private string GetCategoryItems()
@@ -492,6 +519,8 @@ namespace Milestone1
                 selectedOrder = "numCheckins DESC";
             else if (sortResultsByList.SelectedItem.ToString() == "Nearest")
                 selectedOrder = "businessName"; //not implemented yet
+            
+            SearchBusinessButton_Click(null, null);
         }
 
         private void SetCurrentUserTextBox_TextChanged(object sender, TextChangedEventArgs e)
